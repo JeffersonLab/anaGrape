@@ -1,33 +1,35 @@
 # anaGrape
 tool to run grape-dilepton generator and analyze results
+
 it is moved from https://jlabsvn.jlab.org/svnroot/solid/evgen/BH/
 
 ## tool to run generator:
 
-* grape-dilepton generator
-** http://research.kek.jp/people/tabe/grape
+### grape-dilepton generator
+* http://research.kek.jp/people/tabe/grape
 dilepton production generator from electron interacts with proton,used by the experiments at DESY/HERA
 including Bethe-Heitler, compton and other electroweak dilepton production
 similar result comparing to LPAIR, see http://research.kek.jp/people/tabe/grape/heramc1998/proceedings/node4.html#SECTION00040000000000000000
 
-* virtual machine 
-1. It was written in early 2000 and depends on an older version of cernlib. To repeat its exact environment, I built a redhat7 virtual machine to run it. You can download its [http://www.phy.duke.edu/~zz81/vm/RH7.zip vmware version], then unzip and run it with free vmplayer [http://www.vmware.com/go/downloadplayer] on linux or windows. Or you can't download its [http://www.phy.duke.edu/~zz81/vm/RH7.ova virtualbox version], then import and run it with free virtualbox [https://www.virtualbox.org/wiki/Downloads] on linux,mac,window
-2. The virtual machine only has terminal, Xwindow is not working, so use "ctr+F*" to swtich between terminals. both user "zwzhao" and root has passwrod "111111", 
+### virtual machine 
+
+* It was written in early 2000 and depends on an older version of cernlib. To repeat its exact environment, I built a redhat7 virtual machine to run it. You can download its [http://www.phy.duke.edu/~zz81/vm/RH7.zip vmware version], then unzip and run it with free vmplayer [http://www.vmware.com/go/downloadplayer] on linux or windows. Or you can't download its [http://www.phy.duke.edu/~zz81/vm/RH7.ova virtualbox version], then import and run it with free virtualbox [https://www.virtualbox.org/wiki/Downloads] on linux,mac,window
+* The virtual machine only has terminal, Xwindow is not working, so use "ctr+F*" to swtich between terminals. both user "zwzhao" and root has passwrod "111111", 
 The code is under /home/zwzhao/grape-dilpeton_v1.1k ( I had to modify its makefile to compile it)
 My work dir is at /home/zwzhao/grape-dilepton_work where you can see some examples
 you can use scp to transfer files within the virtual machine to outside
 
-* how to run it
-Read the code website and its "README" file to understand how its input parameters defined in "grape.cards" and how to run it. 
-Basically, create a new dir, create a new "grape.cards" file
-run "/home/zwzhao/grape-dilpeton_v1.1k/src/integ | cat > integ.log" (take a long time like 10 hours)
-run "/home/zwzhao/grape-dilpeton_v1.1k/src/spring | cat > spring.log"
-then a ntuple "grp.rz" is produced. 
+### how to run it
 
-* example grape.cards
-cp grape.cards_JLab_11_BH_ele_3fold_decaypairelectron_deg5-50 somewhere/JLab_11_BH_ele_3fold_decaypairelectron_deg5-50/grape.cards
+* Read the code website and its "README" file to understand how its input parameters defined in "grape.cards" and how to run it. 
+* "mkdir JLab_11_BH_ele_3fold_decaypairelectron_deg5-50" and "cd JLab_11_BH_ele_3fold_decaypairelectron_deg5-50"
+* "cp grape.cards_JLab_11_BH_ele_3fold_decaypairelectron_deg5-50 JLab_11_BH_ele_3fold_decaypairelectron_deg5-50/grape.cards"
+* "/home/zwzhao/grape-dilpeton_v1.1k/src/integ | cat > integ.log" (take a long time like 10 hours)
+* "/home/zwzhao/grape-dilpeton_v1.1k/src/spring | cat > spring.log"
+* then a ntuple "grp.rz" is produced. 
 
-* general note 
+### general note 
+
 0. Be careful with NCALL input, too large it can take long time to run bases, too small will reduce accuracy
 1. turn ISR on for initial radiation for electron beam. there is no way to make radation forr final state particle of elastic channel yet. (PSFSR doesn't work for this)
 2. add "RNDGEN true" in grape.cards" to use non-default random seed. Otherwise everytime, you will regeneated the same events. you need to "mv rndstat.dat rndstat.dat.prev" everytime if you want to get new events. refer to http://research.kek.jp/people/tabe/grape/FAQ/rndstat.html
@@ -43,31 +45,39 @@ cp grape.cards_JLab_11_BH_ele_3fold_decaypairelectron_deg5-50 somewhere/JLab_11_
 if we are using electron beam direction as +Z axis, we need to rotate along Y 180 degree to analyses results
 9. when using multiple root files, the correct weight factor is (total crossection)/(total event numbers of all files)
 
-* known problem
+### known problem
 1. occasionally, integ wouldn't end because grid calculation can't converge for certain configuration. 
 2. spring will crash when events go more than 2.9M due to unknown reason (maybe related to avalaible mem). so set NGEN at most 25000000 to be safe
 
-tool to analysis results:
---------------------
+## tool to analysis results:
+
 convert ntuple "grp.rz" to root file "grp.root" by "h2root grp.rz"
 
 anaGrape.C can be used to analyze the output tree "grp.root" from grape-dilepton
 
 root file with acceptance histogram is needed for anaGrape.C to work
 
+```
 an example:
 git clone https://github.com/JeffersonLab/anaGrape.git
 cd anaGrape
 wegt https://github.com/JeffersonLab/solid_gemc/raw/master/analysis/acceptance/result_JPsi/201501/acceptance_solid_JPsi_electron_target315_output.root
+
 mkdir JLab_11_BH_ele_3fold_decaypairelectron_deg5-50
 cd JLab_11_BH_ele_3fold_decaypairelectron_deg5-50
 cp where_it_is/grp.rz ./
 h2root grp.rz
 root 'anaGrape.C+("SoLID_JPsi",false)' (It's too slow to run as script, need to run after compiling)
+```
+The 1st parameter can be SoLID or CLAS12 for detector, true or false for smearing track or not
 
-The parameter can be SoLID or CLAS12 for detector, true or false for smearing track or not
+The 2nd parameter as true or false to control if the code should smear particle 4-momentum according to SoLID momentum resolution.
+Before turning it on, you need to download the dir below and put at right location "../../subsystem/gem/resolution/v1/"
+https://jlabsvn.jlab.org/svnroot/solid/subsystem/gem/resolution/v1/
 
 root2lund.C to convert "grp.root" to "grp.lund" with vertex info added
 root -b -q 'root2lund.C+' (It's too slow and use too much mem to run as script, need to run after compiling)
 
 compare.C to compare different configuration
+
+--------------------
