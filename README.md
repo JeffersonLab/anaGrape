@@ -1,24 +1,21 @@
 # anaGrape
 tool to run grape-dilepton generator and analyze results
+it is moved from https://jlabsvn.jlab.org/svnroot/solid/evgen/BH/
 
-tool to run generator:
---------------------
+## tool to run generator:
+
 * grape-dilepton generator
-http://research.kek.jp/people/tabe/grape
+** http://research.kek.jp/people/tabe/grape
 dilepton production generator from electron interacts with proton,used by the experiments at DESY/HERA
 including Bethe-Heitler, compton and other electroweak dilepton production
-
 similar result comparing to LPAIR, see http://research.kek.jp/people/tabe/grape/heramc1998/proceedings/node4.html#SECTION00040000000000000000
 
 * virtual machine 
-It was written in early 2000 and depends on an older version of cernlib.
-To repeat its exact environment, I built a redhat7 virtual machine to run it.
-You can download its [http://www.phy.duke.edu/~zz81/vm/RH7.zip vmware version], then unzip and run it with free vmplayer [http://www.vmware.com/go/downloadplayer] on linux or windows. 
-Or you can't download its [http://www.phy.duke.edu/~zz81/vm/RH7.ova virtualbox version], then import and run it with free virtualbox [https://www.virtualbox.org/wiki/Downloads] on linux,mac,window
-
-The virtual machine only has terminal, Xwindow is not working, so use "ctr+F*" to swtich between terminals. both user "zwzhao" and root has passwrod "111111", 
+1. It was written in early 2000 and depends on an older version of cernlib. To repeat its exact environment, I built a redhat7 virtual machine to run it. You can download its [http://www.phy.duke.edu/~zz81/vm/RH7.zip vmware version], then unzip and run it with free vmplayer [http://www.vmware.com/go/downloadplayer] on linux or windows. Or you can't download its [http://www.phy.duke.edu/~zz81/vm/RH7.ova virtualbox version], then import and run it with free virtualbox [https://www.virtualbox.org/wiki/Downloads] on linux,mac,window
+2. The virtual machine only has terminal, Xwindow is not working, so use "ctr+F*" to swtich between terminals. both user "zwzhao" and root has passwrod "111111", 
 The code is under /home/zwzhao/grape-dilpeton_v1.1k ( I had to modify its makefile to compile it)
 My work dir is at /home/zwzhao/grape-dilepton_work where you can see some examples
+you can use scp to transfer files within the virtual machine to outside
 
 * how to run it
 Read the code website and its "README" file to understand how its input parameters defined in "grape.cards" and how to run it. 
@@ -28,7 +25,7 @@ run "/home/zwzhao/grape-dilpeton_v1.1k/src/spring | cat > spring.log"
 then a ntuple "grp.rz" is produced. 
 
 * example grape.cards
-put grape.cards_JLab_11_BH_ele_3fold_decaypairelectron_deg5-50 to somewhere
+cp grape.cards_JLab_11_BH_ele_3fold_decaypairelectron_deg5-50 somewhere/JLab_11_BH_ele_3fold_decaypairelectron_deg5-50/grape.cards
 
 * general note 
 0. Be careful with NCALL input, too large it can take long time to run bases, too small will reduce accuracy
