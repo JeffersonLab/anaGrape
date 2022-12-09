@@ -55,28 +55,35 @@ convert ntuple "grp.rz" to root file "grp.root" by "h2root grp.rz"
 
 anaGrape.C can be used to analyze the output tree "grp.root" from grape-dilepton
 
-root file with acceptance histogram is needed for anaGrape.C to work
+acceptance file and resolution file are needed for anaGrape.C to work
 
 ```
-an example:
+here is how to run it
+
 git clone https://github.com/JeffersonLab/anaGrape.git
 cd anaGrape
-wegt https://github.com/JeffersonLab/solid_gemc/raw/master/analysis/acceptance/result_JPsi/201501/acceptance_solid_JPsi_electron_target315_output.root
+wget https://github.com/JeffersonLab/solid_gemc/raw/master/analysis/acceptance/result_JPsi/201501/acceptance_solid_JPsi_electron_target315_output.root
+wget https://solid.jlab.org/files/sim/tmp/ddvcs/acceptance_solid_DDVCS_JPsi_LH2_full_muonm_1e6_output_4thFAMD_1stLAMD.root
+
+download the dir below somewhere
+https://github.com/JeffersonLab/solid_gemc/tree/master/analysis/tracking_resolution
+then make a link by "ln -s the_dir tracking_resolution ./"
 
 mkdir JLab_11_BH_ele_3fold_decaypairelectron_deg5-50
 cd JLab_11_BH_ele_3fold_decaypairelectron_deg5-50
 cp where_it_is/grp.rz ./
 h2root grp.rz
-root 'anaGrape.C+("SoLID_JPsi",false)' (It's too slow to run as script, need to run after compiling)
-```
-The 1st parameter can be SoLID or CLAS12 for detector, true or false for smearing track or not
+ln -s where_anaGrape ./
+ln -s anaGrape/tracking_resolution/res_file ./
+root 'anaGrape/anaGrape.C+("SoLID_DDVCS_JPsi",false)' (It's too slow to run as script, need to run after compiling)
+
+The 1st parameter can be SoLID or CLAS12 for detector
 
 The 2nd parameter as true or false to control if the code should smear particle 4-momentum according to SoLID momentum resolution.
-Before turning it on, you need to download the dir below and put at right location "../../subsystem/gem/resolution/v1/"
-https://jlabsvn.jlab.org/svnroot/solid/subsystem/gem/resolution/v1/
+```
 
-root2lund.C to convert "grp.root" to "grp.lund" with vertex info added
-root -b -q 'root2lund.C+' (It's too slow and use too much mem to run as script, need to run after compiling)
+root2lund_grape-dilepton.C to convert "grp.root" to "grp.lund" with vertex info added
+root -b -q 'root2lund_grape-dilepton.C+' (It's too slow and use too much mem to run as script, need to run after compiling)
 
 compare.C to compare different configuration
 
