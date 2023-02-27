@@ -50,7 +50,7 @@ Lresolution track("JPsi");
 double thetamin,thetamax;
 TH3F *hacceptance_PThetaPhi_positive,*hacceptance_PThetaPhi_negative;
 TH2F *hacceptance_ThetaP_forwardangle,*hacceptance_ThetaP_largeangle;
-TH2F *hacceptance_ThetaP_forwardangle_muon,*hacceptance_ThetaP_largeangle_muon;
+TH2F *hacceptance_ThetaP_forwardangle_muon,*hacceptance_ThetaP_largeangle_muon,*hacceptance_ThetaP_barrel_muon;
 TH2F *hacceptance_ThetaP_forwardangle_muonm,*hacceptance_ThetaP_largeangle_muonm;
 TH2F *hacceptance_ThetaP_forwardangle_muonp,*hacceptance_ThetaP_largeangle_muonp;
 
@@ -155,7 +155,7 @@ else if (detector=="SoLID_DDVCS_JPsi"){
   hacceptance_ThetaP_largeangle->GetZaxis()->SetTitleSize(0.06);
   
   thetamin=0;    
-  thetamax=60;  
+  thetamax=90;  
   
 //      pb = 1e-36 cm2, lumi 1.2e37/cm2/s, 50 days, 0.85 eff
       rate_convert = 1e-36*1.2e37*0.85;  
@@ -181,14 +181,15 @@ else if (detector=="SoLID_DDVCS_JPsi"){
 // TFile *acceptancefile_muon=new TFile("anaGrape/acceptance_solid_DDVCS_JPsi_LH2_full_muonm_1e6_output_1stFAMD_1stLAMD.root");             
 // TFile *acceptancefile_muon=new TFile("anaGrape/acceptance_solid_DDVCS_JPsi_LH2_full_muonm_1e6_output_2ndFAMD_1stLAMD.root");             
 // TFile *acceptancefile_muon=new TFile("anaGrape/acceptance_solid_DDVCS_JPsi_LH2_full_muonm_1e6_output_3rdFAMD_1stLAMD.root");             
-TFile *acceptancefile_muon=new TFile("anaGrape/acceptance_solid_DDVCS_JPsi_LH2_full_muonm_1e6_output_4thFAMD_1stLAMD.root");             
-
+// TFile *acceptancefile_muon=new TFile("anaGrape/acceptance_solid_DDVCS_JPsi_LH2_full_muonm_1e6_output_4thFAMD_1stLAMD.root");             
+TFile *acceptancefile_muon=new TFile("anaGrape/solid_JPsi_DDVCS_LH2_moved_full_even_mum_9e6_output_final.root");             
   
   hacceptance_ThetaP_forwardangle_muon=(TH2F*) acceptancefile_muon->Get("acceptance_ThetaP_forwardangle");  
   hacceptance_ThetaP_largeangle_muon=(TH2F*) acceptancefile_muon->Get("acceptance_ThetaP_largeangle");
+  hacceptance_ThetaP_barrel_muon=(TH2F*) acceptancefile_muon->Get("acceptance_ThetaP_barrel");
   
-  TCanvas *c_acceptance_muon = new TCanvas("acceptance_muon","acceptance_muon",1200,900);
-  c_acceptance_muon->Divide(2,1);
+  TCanvas *c_acceptance_muon = new TCanvas("acceptance_muon","acceptance_muon",1900,900);
+  c_acceptance_muon->Divide(3,1);
   c_acceptance_muon->cd(1);
   hacceptance_ThetaP_forwardangle_muon->Draw("colz");
   hacceptance_ThetaP_forwardangle_muon->SetTitle(";#theta (deg); P (GeV/c)");
@@ -198,7 +199,6 @@ TFile *acceptancefile_muon=new TFile("anaGrape/acceptance_solid_DDVCS_JPsi_LH2_f
   hacceptance_ThetaP_forwardangle_muon->GetYaxis()->SetTitleSize(0.06);
   hacceptance_ThetaP_forwardangle_muon->GetZaxis()->SetLabelSize(0.06);
   hacceptance_ThetaP_forwardangle_muon->GetZaxis()->SetTitleSize(0.06);
-
   c_acceptance_muon->cd(2);
   hacceptance_ThetaP_largeangle_muon->Draw("colz");   
   hacceptance_ThetaP_largeangle_muon->SetTitle(";#theta (deg); P (GeV/c)");  
@@ -208,7 +208,15 @@ TFile *acceptancefile_muon=new TFile("anaGrape/acceptance_solid_DDVCS_JPsi_LH2_f
   hacceptance_ThetaP_largeangle_muon->GetYaxis()->SetTitleSize(0.06);
   hacceptance_ThetaP_largeangle_muon->GetZaxis()->SetLabelSize(0.06);
   hacceptance_ThetaP_largeangle_muon->GetZaxis()->SetTitleSize(0.06);
-  
+  c_acceptance_muon->cd(3);
+  hacceptance_ThetaP_barrel_muon->Draw("colz");   
+  hacceptance_ThetaP_barrel_muon->SetTitle(";#theta (deg); P (GeV/c)");  
+  hacceptance_ThetaP_barrel_muon->GetXaxis()->SetLabelSize(0.06);
+  hacceptance_ThetaP_barrel_muon->GetXaxis()->SetTitleSize(0.06);
+  hacceptance_ThetaP_barrel_muon->GetYaxis()->SetLabelSize(0.06);
+  hacceptance_ThetaP_barrel_muon->GetYaxis()->SetTitleSize(0.06);
+  hacceptance_ThetaP_barrel_muon->GetZaxis()->SetLabelSize(0.06);
+  hacceptance_ThetaP_barrel_muon->GetZaxis()->SetTitleSize(0.06);
 }
 else if (detector=="SoLID_DDVCS_PVDIS"){
   TFile *acceptancefile=new TFile("anaGrape/acceptance_solid_PVDIS_electron_output.root");  
@@ -220,8 +228,10 @@ else if (detector=="SoLID_DDVCS_PVDIS"){
   c_acceptance->cd(1);
   hacceptance_ThetaP_forwardangle->Draw("colz");
   
-   TFile *acceptancefile_muonm=new TFile("anaGrape/acceptance_solid_DDVCS_PVDIS_LH2_full_muonm_1e5_output_1stFAMD.root");             
-   TFile *acceptancefile_muonp=new TFile("anaGrape/acceptance_solid_DDVCS_PVDIS_LH2_full_muonp_1e5_output_1stFAMD.root");             
+//    TFile *acceptancefile_muonm=new TFile("anaGrape/acceptance_solid_DDVCS_PVDIS_LH2_full_muonm_1e5_output_1stFAMD.root");             
+//    TFile *acceptancefile_muonp=new TFile("anaGrape/acceptance_solid_DDVCS_PVDIS_LH2_full_muonp_1e5_output_1stFAMD.root");             
+   TFile *acceptancefile_muonm=new TFile("anaGrape/acceptance_solid_DDVCS_JPsi_LH2_full_muonm_1e6_output_4thFAMD_1stLAMD.root");             
+   TFile *acceptancefile_muonp=new TFile("anaGrape/acceptance_solid_DDVCS_JPsi_LH2_full_muonm_1e6_output_4thFAMD_1stLAMD.root");             
    
    hacceptance_ThetaP_forwardangle_muonm=(TH2F*) acceptancefile_muonm->Get("acceptance_ThetaP_forwardangle"); 
    hacceptance_ThetaP_forwardangle_muonp=(TH2F*) acceptancefile_muonp->Get("acceptance_ThetaP_forwardangle");    
@@ -233,8 +243,8 @@ else if (detector=="SoLID_DDVCS_PVDIS"){
   c_acceptance_muon->cd(2);
   hacceptance_ThetaP_forwardangle_muonp->Draw("colz");  
    
-  thetamin=10;    
-  thetamax=50;  
+  thetamin=0;    
+  thetamax=90;  
   
 //      pb = 1e-36 cm2, lumi 0.53e39/cm2/s, 120 days, 0.85 eff
       rate_convert = 1e-36*0.53e39*0.85;  
@@ -351,7 +361,8 @@ TH1F *hlepIM1[m],*hlepIM2[m],*hlepIM[m];
 TH1F *hlepIM1_error[m],*hlepIM2_error[m],*hlepIM_error[m];
 TH2F *hlepIM_2D[m];
 TH2F *hdecaymom1[m],*hdecaymom2[m];
-TH2F *hdecayangle1[m],*hdecayangle2[m],*hdecayangle3[m];
+TH2F *hdecayangle1_theta[m],*hdecayangle2_theta[m],*hdecayangle3_theta[m];
+TH2F *hdecayangle1_phi[m],*hdecayangle2_phi[m],*hdecayangle3_phi[m];
 TH2F *hThetaP[4][m],*hThetaPhi[4][m];
 TH1F *hnew_p[m],*hnew_theta[m],*hnew_phi[m];
 for(int k=0;k<m;k++){
@@ -371,29 +382,25 @@ for(int k=0;k<m;k++){
   sprintf(hstname,"new_phi_%i",k);
   hnew_phi[k] = new TH1F(hstname,hstname,100,-1,1);
   
-//   sprintf(hstname,"decayangle1_%i",k);
-//   hdecayangle1[k] = new TH2F(hstname,";decay lepton^{+} #phi (deg);decay lepton^{-} #phi (deg)",100,0,40,100,0,40);
-// 
-//   sprintf(hstname,"decayangle2_%i",k);
-//   hdecayangle2[k] = new TH2F(hstname,";decay lepton^{+} #phi (deg);scattered lepton #phi (deg)",100,0,40,100,0,40);  
-//   
-//   sprintf(hstname,"decayangle3_%i",k);
-//   hdecayangle3[k] = new TH2F(hstname,";decay lepton^{-} #phi (deg);scattered lepton #phi (deg)",100,0,40,100,0,40);  
-
-  sprintf(hstname,"decayangle1_%i",k);
-  hdecayangle1[k] = new TH2F(hstname,";decay lepton^{+} #phi (deg);decay lepton^{-} #phi (deg)",180,-180,180,180,-180,180);
-
-  sprintf(hstname,"decayangle2_%i",k);
-  hdecayangle2[k] = new TH2F(hstname,";decay lepton^{+} #phi (deg);scattered lepton #phi (deg)",180,-180,180,180,-180,180);
-  
-  sprintf(hstname,"decayangle3_%i",k);
-  hdecayangle3[k] = new TH2F(hstname,";decay lepton^{-} #phi (deg);scattered lepton #phi (deg)",180,-180,180,180,-180,180);
-
   sprintf(hstname,"decaymom1_%i",k);
   hdecaymom1[k] = new TH2F(hstname,";l^{+} P (GeV);l^{-} P (GeV)",100,0,10,100,0,10);
-
   sprintf(hstname,"decaymom2_%i",k);
   hdecaymom2[k] = new TH2F(hstname,";l^{+} P (GeV);l^{-} P (GeV)",100,0,10,100,0,10);
+
+  sprintf(hstname,"decayangle1_phi_%i",k);
+  hdecayangle1_phi[k] = new TH2F(hstname,";decay lepton^{+} #phi (deg);decay lepton^{-} #phi (deg)",180,-180,180,180,-180,180);
+  sprintf(hstname,"decayangle2_phi_%i",k);
+  hdecayangle2_phi[k] = new TH2F(hstname,";decay lepton^{+} #phi (deg);scattered lepton #phi (deg)",180,-180,180,180,-180,180);
+  sprintf(hstname,"decayangle3_phi_%i",k);
+  hdecayangle3_phi[k] = new TH2F(hstname,";decay lepton^{-} #phi (deg);scattered lepton #phi (deg)",180,-180,180,180,-180,180);
+
+  sprintf(hstname,"decayangle1_theta_%i",k);
+  hdecayangle1_theta[k] = new TH2F(hstname,";decay lepton^{+} #theta (deg);decay lepton^{-} #theta (deg)",90,0,90,90,0,90);
+  sprintf(hstname,"decayangle2_theta_%i",k);
+  hdecayangle2_theta[k] = new TH2F(hstname,";decay lepton^{+} #theta (deg);scattered lepton #theta (deg)",90,0,90,90,0,90);
+  sprintf(hstname,"decayangle3_theta_%i",k);
+  hdecayangle3_theta[k] = new TH2F(hstname,";decay lepton^{-} #theta (deg);scattered lepton #theta (deg)",90,0,90,90,0,90);
+
   
   sprintf(hstname,"lepIM_2D_%i",k);
   hlepIM_2D[k] = new TH2F(hstname,";e+ e-(1st) Inv Mass (GeV);e+ e-(2nd) Inv Mass (GeV)",80,0,4.0,80,0,4.0);   
@@ -568,7 +575,7 @@ char* input_filename[1]={"grp.root"};
       int whichone=0;      
       double acc=0;      
       double acc_prot=0,acc_kp=0,acc_em=0,acc_ep=0;
-      double acc_em_FA=0,acc_em_LA=0,acc_ep_FA=0,acc_ep_LA=0;
+      double acc_em_FA=0,acc_em_LA=0,acc_em_barrel=0,acc_ep_FA=0,acc_ep_LA=0,acc_ep_barrel=0;
       double acc_kp_FA=0,acc_kp_LA=0,acc_prot_FA=0,acc_prot_LA=0;      
       if (detector=="CLAS12"){
 	  //note CLAS12 acceptance phi (0,360), TLonrenzvector.Phi (-180,180) 	
@@ -696,29 +703,39 @@ char* input_filename[1]={"grp.root"};
 	  
 	  acc_ep_LA = hacceptance_ThetaP_largeangle_muon->GetBinContent(hacceptance_ThetaP_largeangle_muon->FindBin(ep.Theta()*DEG,ep.P()));  
 	  acc_em_LA = hacceptance_ThetaP_largeangle_muon->GetBinContent(hacceptance_ThetaP_largeangle_muon->FindBin(em.Theta()*DEG,em.P()));	
-	   
+
+	  acc_ep_barrel = hacceptance_ThetaP_barrel_muon->GetBinContent(hacceptance_ThetaP_barrel_muon->FindBin(ep.Theta()*DEG,ep.P()));  
+	  acc_em_barrel = hacceptance_ThetaP_barrel_muon->GetBinContent(hacceptance_ThetaP_barrel_muon->FindBin(em.Theta()*DEG,em.P()));	
+	  
 	  acc_prot = acc_prot_FA+acc_prot_LA;
 	  acc_kp= acc_kp_LA+acc_kp_FA;	  	  
 	  
-	  if (-120<ep.Phi()*DEG && ep.Phi()*DEG<-60) acc_ep_LA=0;
-	  if (-120<em.Phi()*DEG && em.Phi()*DEG<-60) acc_em_LA=0;
+	  //cut 60 deg to form LA300
+// 	  if (-120<ep.Phi()*DEG && ep.Phi()*DEG<-60) acc_ep_LA=0;
+// 	  if (-120<em.Phi()*DEG && em.Phi()*DEG<-60) acc_em_LA=0;
 	  
-	  acc_ep= acc_ep_LA+acc_ep_FA;
-	  acc_em= acc_em_LA+acc_em_FA;	
+	  acc_ep= acc_ep_LA+acc_ep_FA+acc_ep_barrel;
+	  acc_em= acc_em_LA+acc_em_FA+acc_em_barrel;	
 // 	  acc_ep= acc_ep_FA;
 // 	  acc_em= acc_em_FA;		  
 // 	  acc_ep= acc_ep_LA;
 // 	  acc_em= acc_em_LA;		  
 	  
 	  //for barrel muon 
-	  if (em.P()>=1 && (28<=em.Theta()*DEG && em.Theta()*DEG <50)) acc_em=1;
-	  if (ep.P()>=1 && (28<=ep.Theta()*DEG && ep.Theta()*DEG <50)) acc_ep=1;	  
+// 	  if (ep.P()>=1 && (28<=ep.Theta()*DEG && ep.Theta()*DEG <50)) acc_ep=1;	  
+// 	  if (em.P()>=1 && (28<=em.Theta()*DEG && em.Theta()*DEG <50)) acc_em=1;
+// 	  if (ep.P()>=1 && (28<=ep.Theta()*DEG && ep.Theta()*DEG <70)) acc_ep=1;	  
+// 	  if (em.P()>=1 && (28<=em.Theta()*DEG && em.Theta()*DEG <70)) acc_em=1;
 	  
 	  //for 22gev beam
-	  if (prot.P()>=11 && (8<=prot.Theta()*DEG && prot.Theta()*DEG <28)) acc_prot=1;
-	  if (kp.P()>=11 && (8<=kp.Theta()*DEG && kp.Theta()*DEG <28)) acc_kp=1;
-	  if (em.P()>=11 && (8<=em.Theta()*DEG && em.Theta()*DEG <28)) acc_em=1;
-	  if (ep.P()>=11 && (8<=ep.Theta()*DEG && ep.Theta()*DEG <28)) acc_ep=1;	  
+// 	  if (prot.P()>=11 && (8<=prot.Theta()*DEG && prot.Theta()*DEG <28)) acc_prot=1;
+// 	  if (kp.P()>=11 && (8<=kp.Theta()*DEG && kp.Theta()*DEG <28)) acc_kp=1;
+// 	  if (em.P()>=11 && (8<=em.Theta()*DEG && em.Theta()*DEG <28)) acc_em=1;
+// 	  if (ep.P()>=11 && (8<=ep.Theta()*DEG && ep.Theta()*DEG <28)) acc_ep=1;	  
+// 	  if (prot.P()>=11 && (8<=prot.Theta()*DEG && prot.Theta()*DEG <28)) acc_prot=1;
+// 	  if (kp.P()>=11 && (8<=kp.Theta()*DEG && kp.Theta()*DEG <28)) acc_kp=1;
+// 	  if (em.P()>=11 && (8<=em.Theta()*DEG && em.Theta()*DEG <70)) acc_em=1;
+// 	  if (ep.P()>=11 && (8<=ep.Theta()*DEG && ep.Theta()*DEG <70)) acc_ep=1;	  
 
 // 	  acc=acc_kp*acc_ep*acc_em*acc_prot;	  
 	  acc=acc_kp*acc_ep*acc_em;
@@ -745,9 +762,14 @@ char* input_filename[1]={"grp.root"};
 // 	  acc_prot=hacceptance_ThetaP_forwardangle->GetBinContent(hacceptance_ThetaP_forwardangle->FindBin(prot.Theta()*DEG,prot.P()));	  
 // 	  if (22<prot.Theta()*DEG && prot.Theta()*DEG<35) acc_prot=1;	
 	
+
 	  acc_kp=hacceptance_ThetaP_forwardangle->GetBinContent(hacceptance_ThetaP_forwardangle->FindBin(kp.Theta()*DEG,kp.P()));	  
 
-	  acc_ep_FA=hacceptance_ThetaP_forwardangle_muonp->GetBinContent(hacceptance_ThetaP_forwardangle_muonp->FindBin(ep.Theta()*DEG,ep.P()));	acc_em_FA=hacceptance_ThetaP_forwardangle_muonm->GetBinContent(hacceptance_ThetaP_forwardangle_muonm->FindBin(em.Theta()*DEG,em.P()));	
+// 	  acc_ep_FA=hacceptance_ThetaP_forwardangle_muonp->GetBinContent(hacceptance_ThetaP_forwardangle_muonp->FindBin(ep.Theta()*DEG,ep.P()));	
+// 	  acc_em_FA=hacceptance_ThetaP_forwardangle_muonm->GetBinContent(hacceptance_ThetaP_forwardangle_muonm->FindBin(em.Theta()*DEG,em.P()));	
+
+	  if (ep.P()>=1 && (22<=ep.Theta()*DEG && ep.Theta()*DEG <35)) acc_ep_FA=1;	  	  
+	  if (em.P()>=1 && (22<=em.Theta()*DEG && em.Theta()*DEG <35)) acc_em_FA=1;
 	  
 	  acc_ep= acc_ep_FA;
 	  acc_em= acc_em_FA;	  
@@ -758,7 +780,8 @@ char* input_filename[1]={"grp.root"};
 // 	  	cout << acc_kp << "\t" << acc_ep << "\t" << acc_em << endl;
 		
 // 	  acc=acc_prot*acc_ep*acc_kp*acc_em;	  
-	  acc=acc_kp*acc_ep*acc_em;	  	  	  
+	  acc=acc_kp;	  
+// 	  acc=acc_kp*acc_ep*acc_em;	  	  	  
 // 	  	  acc=acc_ep*acc_em;	  	  	  
 // 	  	  acc=acc_prot;	  	  	  	  
 // 	  acc=acc_prot*acc_ep*acc_em;	  	  	  	  
@@ -1030,13 +1053,13 @@ if (Is_res &&  acc>0){
 	hThetaPhi[2][k]->Fill(em.Theta()*DEG,em.Phi()*DEG,weight[k]);
 	hThetaPhi[3][k]->Fill(ep.Theta()*DEG,ep.Phi()*DEG,weight[k]);
 
-	hdecayangle1[k]->Fill(ep.Phi()*DEG,em.Phi()*DEG,weight[k]);
-	hdecayangle2[k]->Fill(ep.Phi()*DEG,kp.Phi()*DEG,weight[k]);
-	hdecayangle3[k]->Fill(em.Phi()*DEG,kp.Phi()*DEG,weight[k]);		
+	hdecayangle1_phi[k]->Fill(ep.Phi()*DEG,em.Phi()*DEG,weight[k]);
+	hdecayangle2_phi[k]->Fill(ep.Phi()*DEG,kp.Phi()*DEG,weight[k]);
+	hdecayangle3_phi[k]->Fill(em.Phi()*DEG,kp.Phi()*DEG,weight[k]);		
 	
-// 	hdecayangle1[k]->Fill(ep.Theta()*DEG,em.Theta()*DEG,weight[k]);
-// 	hdecayangle2[k]->Fill(ep.Theta()*DEG,kp.Theta()*DEG,weight[k]);
-// 	hdecayangle3[k]->Fill(em.Theta()*DEG,kp.Theta()*DEG,weight[k]);			
+	hdecayangle1_theta[k]->Fill(ep.Theta()*DEG,em.Theta()*DEG,weight[k]);
+	hdecayangle2_theta[k]->Fill(ep.Theta()*DEG,kp.Theta()*DEG,weight[k]);
+	hdecayangle3_theta[k]->Fill(em.Theta()*DEG,kp.Theta()*DEG,weight[k]);			
 // 	if (Is_inter) hdecayangle2[k]->Fill(ep.Theta()*DEG,kp.Theta()*DEG,weight[k]);	
 
 	hdecaymom1[k]->Fill(ep.P(),em.P(),weight[k]);
@@ -1113,19 +1136,20 @@ if (Is_res &&  acc>0){
   cout << "xsec_thisbin " << xsec_thisbin << endl;
   
   TCanvas *c_ThetaP = new TCanvas("ThetaP","ThetaP",1200,900);
-  c_ThetaP->Divide(4,m-2);
-  for(int k=0;k<m-2;k++){
+  c_ThetaP->Divide(4,m);
+  for(int k=0;k<m;k++){
     for(int l=0;l<4;l++){
-      gPad->SetLogz(1);
       c_ThetaP->cd(k*4+l+1);
       hThetaP[l][k]->Draw("colz");
       hThetaP[l][k]->SetAxisRange(thetamin,thetamax,"X");      
+      gPad->SetLogz(1);      
     }
   }
   
   TCanvas *c_ThetaP_final = new TCanvas("ThetaP_final","ThetaP_final",1200,900);
   c_ThetaP_final->Divide(2,2);
-  for(int k=3;k<4;k++){
+//   for(int k=3;k<4;k++){
+  for(int k=4;k<5;k++){  
     for(int l=0;l<4;l++){
       c_ThetaP_final->cd(l+1);
       gPad->SetLogz(1);      
@@ -1164,8 +1188,8 @@ leg4->AddEntry(hPlog_minus_LA, Form("%02f",hPlog_minus_LA->Integral()),"l");
 leg4->Draw();    
 
   TCanvas *c_ThetaPhi = new TCanvas("ThetaPhi","ThetaPhi",1200,900);
-  c_ThetaPhi->Divide(4,m-2);
-  for(int k=0;k<m-2;k++){
+  c_ThetaPhi->Divide(4,m);
+  for(int k=0;k<m;k++){
     for(int l=0;l<4;l++){
       gPad->SetLogz(1);
       c_ThetaPhi->cd(k*4+l+1);
@@ -1174,13 +1198,23 @@ leg4->Draw();
     }
   }
   
+  TCanvas *c_decayangle_theta = new TCanvas("decayangle_theta","decayangle_theta",1200,300);
+  c_decayangle_theta->Divide(3,1);
+  c_decayangle_theta->cd(1);
+  hdecayangle1_theta[3]->Draw("colz");
+  c_decayangle_theta->cd(2);
+  hdecayangle2_theta[3]->Draw("colz");
+  c_decayangle_theta->cd(3);
+  hdecayangle3_theta[3]->Draw("colz");
   
-  TCanvas *c_decayangle1 = new TCanvas("decayangle1","decayangle1",1200,900);
-  hdecayangle1[3]->Draw("colz");
-  TCanvas *c_decayangle2 = new TCanvas("decayangle2","decayangle2",1200,900);
-  hdecayangle2[3]->Draw("colz");  
-  TCanvas *c_decayangle3 = new TCanvas("decayangle3","decayangle3",1200,900);
-  hdecayangle3[3]->Draw("colz");  
+  TCanvas *c_decayangle_phi = new TCanvas("decayangle_phi","decayangle_phi",1200,300);
+  c_decayangle_phi->Divide(3,1);
+  c_decayangle_phi->cd(1);
+  hdecayangle1_phi[3]->Draw("colz");
+  c_decayangle_phi->cd(2);
+  hdecayangle2_phi[3]->Draw("colz");
+  c_decayangle_phi->cd(3);
+  hdecayangle3_phi[3]->Draw("colz");
 
   TCanvas *c_decaymom1 = new TCanvas("decaymom1","decaymom1",1200,900);
   hdecaymom1[3]->Draw("colz");
@@ -1213,8 +1247,8 @@ leg4->Draw();
   hlepIM[3]->Draw();
 
   TCanvas *c_lepIM = new TCanvas("lepIM","lepIM",1200,900);
-  c_lepIM->Divide(4,m-2);
-  for(int k=0;k<m-2;k++){
+  c_lepIM->Divide(4,m);
+  for(int k=0;k<m;k++){
       c_lepIM->cd(k*4+1);
       hlepIM1[k]->Draw();
       c_lepIM->cd(k*4+2);

@@ -28,6 +28,9 @@ you can use scp to transfer files within the virtual machine to outside
 * "/home/zwzhao/grape-dilpeton_v1.1k/src/spring | cat > spring.log"
 * then a ntuple "grp.rz" is produced. 
 
+module load singularity/3.9.5
+singularity exec ../../grape_1.1.sif integ
+
 ### general note 
 
 0. Be careful with NCALL input, too large it can take long time to run bases, too small will reduce accuracy
