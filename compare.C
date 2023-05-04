@@ -6,31 +6,49 @@ gStyle->SetOptStat(0);
 // const int n=4;
 // char *name[n]={"BHinterNO","BHinter","Compton","QED"};
 const int n=3;
-char *name[n]={"BH_muon_3fold_decaypairproton_deg5-50","BH_muon_3fold_decaypairelectron_deg5-50","BH_muon_4fold_deg5-50"};
 
-char *label[n]={"recoil proton and decay pair","scattered e- and decay pair","all 4 particles"};
+char hstname[100],title[100]; 
 
-int color[3]={kBlack,kRed,kGreen};
+// char *name[n]={"BH_muon_3fold_decaypairproton_deg5-50","BH_muon_3fold_decaypairelectron_deg5-50","BH_muon_4fold_deg5-50"};
+// char *label[n]={"recoil proton and decay pair","scattered e- and decay pair","all 4 particles"};
+// sprintf(hstname,"lepIM1_3");
+
+char *name[n]={
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50",
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50",
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_dis_deg5-50",
+};
+// char *label[n]={"elastic","quasi-elastic","DIS"};
+char *label[n]={"BH","BH+pi0","DIS"};
+sprintf(hstname,"MM");
+sprintf(title,"missing mass of proton");
+
+// int color[3]={kBlack,kRed,kGreen};
+int color[3]={0,1,2};
 
 TFile *file[6];
 TH1F *h[6];
 TCanvas *c = new TCanvas("c","c",1000,800);
 TLegend* leg = new TLegend(0.75, 0.9-0.05*6, 0.95, 0.95);
 for (Int_t i=0;i<n;i++) {
+  if (i==2) continue;
+  cout << i << endl;
+  
 //   cout << Form("%s/grp_out.root",name[i]) << endl;
 //   file[i]=new TFile(Form("%s/acceptance_forward/grp_out.root",name[i]));  
 //   file[i]=new TFile(Form("%s/acceptance_forwardandlarge/grp_out.root",name[i]));    
-  file[i]=new TFile(Form("%s/grp_out.root",name[i]));      
+//   file[i]=new TFile(Form("%s/grp_out.root",name[i]));
+  file[i]=new TFile(Form("%s/output.root",name[i]));        
 
-  h[i]=(TH1F*) file[i]->Get("lepIM1_3");
+  h[i]=(TH1F*) file[i]->Get(hstname);
 //   hacceptance_P[i]=(TH1F*) file[i]->Get("acceptance_P");
 //   hacceptance_Theta[i]=(TH1F*) file[i]->Get("acceptance_Theta");
 //   hacceptance_Q2[i]=(TH1F*) file[i]->Get("acceptance_Q2");
-//  h[i]->SetLineColor(i+1); 
-   h[i]->SetLineColor(color[i]);
- h[i]->SetMaximum(5e5); 
-//  h[i]->SetMaximum(1.5e-5);  
- cout << i << endl;
+ h[i]->SetLineColor(i+1); 
+//    h[i]->SetLineColor(color[i]);
+//  h[i]->SetMaximum(5e5); 
+//  h[i]->SetMaximum(1.5e-5); 
+ h[i]->SetTitle(title);
  if (i==0) h[i]->Draw();
  else h[i]->Draw("same");
  
@@ -42,6 +60,10 @@ for (Int_t i=0;i<n;i++) {
   leg->AddEntry(h[i], label[i],"l");  
  
 }
+
+leg->Draw();
+
+return;
 
 for (Int_t i=3;i<6;i++) {
 //   cout << Form("%s/grp_out.root",name[i]) << endl;
