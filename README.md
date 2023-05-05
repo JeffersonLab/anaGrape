@@ -63,7 +63,7 @@ at jlab ifarm, run twopeg included in clas12-mcgen 2.14 at /group/clas12/package
 
 cd /work/halla/solid/zwzhao/twopion/commit7034d9f_20201215/
 source /group/clas12/packages/setup.csh
-module load clas12/pro
+module load clas12/3.4
 twopeg  < inp1   (get inp1 example from the source code github)
 file "twopeg.dat" in lund format should be produced
 
@@ -126,7 +126,6 @@ The 1st parameter can be SoLID or CLAS12 for detector
 
 The 2nd parameter as true or false to control if the code should smear particle 4-momentum according to SoLID momentum resolution.
 ```
-
 
 --------------------
 

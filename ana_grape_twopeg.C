@@ -606,7 +606,7 @@ else {cout << "not supported evgen " << evgen << endl; return;}
   cout << "|___________________|" << endl;
   cout << "|" << flush;
   
-    double xsec_thisbin=0;  
+//     double xsec_thisbin=0;  
   
   for(Int_t i=0; i < nevent; i++){
 //     for(Int_t i=0; i < 10; i++){
@@ -1139,18 +1139,23 @@ if (Is_res &&  acc>0){
 // cout << (kp+prot+ep+em).P() <<  " " << (kp+prot+ep+em).Theta() << endl;
 
     TLorentzVector LV_Recoil_lab=prot,LV_minus_lab=em,LV_plus_lab=ep,LV_el_in=ki,LV_el_out=kp;
-     
-    TVector3 Tang_plane_lab=((LV_Recoil_lab.Vect().Unit()).Cross((LV_minus_lab+LV_plus_lab).Vect().Unit() )).Unit();
+
+    //incoming virtual photon,outgoing virtual photon and recoil proton are all on the same hadron plane
+    //phi angle is from lepton plane to recoil proton, kinda like trento convention for SIDIS at PhysRevD.70.117504 which has pho angle from lepton plane to outgoing hadron
+    TVector3 Tang_plane_lab=((LV_minus_lab+LV_plus_lab).Vect().Unit()).Cross((LV_Recoil_lab.Vect().Unit())).Unit();    
     TVector3 Tang_el=((LV_el_in.Vect().Unit()).Cross(LV_el_out.Vect().Unit())).Unit();	
-    double Phi_LH= TMath::ACos(Tang_el*Tang_plane_lab);
-    if ((Tang_el*(LV_minus_lab+LV_plus_lab).Vect())<0.)Phi_LH=2*TMath::Pi()-Phi_LH;
+    double Phi_LH= TMath::ACos(Tang_el*Tang_plane_lab); //same result as Tang_el.Angle(Tang_plane_lab)
+    if ((Tang_el*(LV_minus_lab+LV_plus_lab).Vect())>0.)Phi_LH=2*TMath::Pi()-Phi_LH;
 
-//      Tang_el.Angle(Tang_plane_lab) is always 0-Pi    
-//     cout << " Phi_LH " <<  Tang_el.Angle(Tang_plane_lab) << " " << Phi_LH << endl;
+// phi angle is from lepton plane to outgoing virtual photon, like Belitsky PhysRevD.68.116005, differ by pi than the one above
+//     TVector3 Tang_plane_lab=((LV_Recoil_lab.Vect().Unit()).Cross((LV_minus_lab+LV_plus_lab).Vect().Unit())).Unit();
+//     TVector3 Tang_el=((LV_el_in.Vect().Unit()).Cross(LV_el_out.Vect().Unit())).Unit();	
+//     double Phi_LH= TMath::ACos(Tang_el*Tang_plane_lab);
+//     if ((Tang_el*(LV_minus_lab+LV_plus_lab).Vect())<0.)Phi_LH=2*TMath::Pi()-Phi_LH;
 
-    
+    //     cout << " Phi_LH " <<  Tang_el.Angle(Tang_plane_lab) << " " << Phi_LH << endl;
 		
-    TLorentzVector LV_gamma_lab=LV_minus_lab+LV_plus_lab;
+    TLorentzVector LV_gamma_lab=LV_minus_lab+LV_plus_lab;    
     TLorentzVector LV_plus_CMV=LV_plus_lab;
     LV_plus_CMV.Boost(-LV_gamma_lab.BoostVector());
     TLorentzVector LV_minus_CMV=LV_minus_lab;
@@ -1205,11 +1210,11 @@ if (Is_res &&  acc>0){
 // 	  if (conf_3fold_NOp && (kp_accept_forwardangle && (ep_accept_forwardangle || ep_accept_largeangle) && (em_accept_forwardangle || em_accept_largeangle)) && othercut) cut=true;
 // 	  if (conf_3fold_NOe && ((ep_accept_forwardangle || ep_accept_largeangle) && (em_accept_forwardangle || em_accept_largeangle) && prot_accept_forwardangle) && othercut) cut=true;
     
-    if (fabs(xbj-0.1)<0.05 && fabs(-t-0.45)<0.1 && fabs(Q2-1.5)<0.1 && fabs(Qp2-4)<0.1){
-//     cout << "bin " << xbj << " " << -t << " " << Q2 << " " << Qp2  << " " << Phi_LH << " " << Theta_CMV  << " " << Phi_CMV << endl;     
-    xsec_thisbin += acc*effxsec;    
-//       if(fabs(Phi_LH-1)<0.05 && fabs(Theta_CMV-30)<10 && fabs(Phi_CMV-30)<10) xsec_thisbin++;    
-    }
+//     if (fabs(xbj-0.1)<0.05 && fabs(-t-0.45)<0.1 && fabs(Q2-1.5)<0.1 && fabs(Qp2-4)<0.1){
+// //     cout << "bin " << xbj << " " << -t << " " << Q2 << " " << Qp2  << " " << Phi_LH << " " << Theta_CMV  << " " << Phi_CMV << endl;     
+//     xsec_thisbin += acc*effxsec;    
+// //       if(fabs(Phi_LH-1)<0.05 && fabs(Theta_CMV-30)<10 && fabs(Phi_CMV-30)<10) xsec_thisbin++;    
+//     }
       
       weight[0]=1;
       weight[1]=acc;
@@ -1346,7 +1351,7 @@ if (Is_res &&  acc>0){
   
   cout << "counter " << counter1 << " " << counter2 << " " << counter3 << " " << counter4 << " " << counter5 << " " << counter6 <<  endl;
 
-  cout << "xsec_thisbin " << xsec_thisbin << endl;
+//   cout << "xsec_thisbin " << xsec_thisbin << endl;
   
   TCanvas *c_ThetaP = new TCanvas("ThetaP","ThetaP",1200,900);
   c_ThetaP->Divide(4,m);
@@ -1641,9 +1646,11 @@ hacc_Qp2_t->Draw("colz");
   TCanvas *c_countproj = new TCanvas("c_countproj","c_countproj",1600,900);
   hcount[0]->SetLineColor(kBlack);
   hcount[0]->SetMinimum(0);    
+  hcount[0]->SetMaximum(1e3);      
   hcount[0]->Draw("HIST");
   hcount[1]->SetLineColor(kRed);
   hcount[1]->SetMinimum(0);    
+  hcount[1]->SetMaximum(1e3);    
   hcount[1]->Draw("HIST same");
   c_countproj->SaveAs(Form("%s/countproj.png",input_filedir.c_str()));      
   
