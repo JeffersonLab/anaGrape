@@ -22,7 +22,7 @@ using namespace std;
 // void anaGrape(string input_filedir,string detector=""){
 // void anaGrape(string detector="",bool Is_inter=false){
 // void anaGrape(string detector="",bool Is_res=false){
-void ana_grape_twopeg(string evgen="",string detector="",string input_filedir="",bool Is_res=false,string decaypair="e",int decaymode=0)  //Is_res and decaypair are needed for track smearing, decaymode are needed for twopeg generator
+void ana_grape_twopeg(string evgen="",string detector="",string input_filedir="",double Ebeam=11,bool Is_res=false,string decaypair="e",int decaymode=0)  //Is_res and decaypair are needed for track smearing, decaymode are needed for twopeg generator
 {
 //  set_style();
 gROOT->Reset();
@@ -51,8 +51,16 @@ TRandom3 rnd;
 int windex=3;  //select weight_as counts without cut
 // int windex=4;  //select weight_as counts with cut
 
-      double count_convert;
-      double rate_convert;
+int Pmax,Q2max,Qp2max;
+if (Ebeam==11){
+  Pmax=11;Q2max=10;Qp2max=10;
+}
+else{ //Ebeam 22 
+  Pmax=22;Q2max=20;Qp2max=20;
+}  
+  
+double count_convert;
+double rate_convert;
 double thetamin,thetamax;
 TH3F *hacceptance_PThetaPhi_positive,*hacceptance_PThetaPhi_negative;
 TH2F *hacceptance_ThetaP_forwardangle,*hacceptance_ThetaP_largeangle;
@@ -397,18 +405,18 @@ TH2F *hMM_t = new TH2F("MM_t","; MM (GeV);-t (GeV^{2})",150,0.5,2,100,0,2);
 
 TH1F *ht = new TH1F("t","t",600,0,6);
 
-TH2F *ht_Qp2 = new TH2F("t_Qp2",";-t (GeV^{2});Q'^{2}(GeV^{2})",100,0,2,100,0,10);
+TH2F *ht_Qp2 = new TH2F("t_Qp2",";-t (GeV^{2});Q'^{2}(GeV^{2})",100,0,2,Qp2max*10,0,Qp2max);
 TH2F *ht_W = new TH2F("t_W",";-t (GeV^{2});W (GeV)",100,0,2,100,0,10);
-TH2F *hQ2_W = new TH2F("Q2_W",";Q^{2}(GeV^{2});W (GeV)",100,0,10,100,0,10);
-TH2F *ht_Q2 = new TH2F("t_Q2",";-t (GeV^{2});Q^{2}(GeV^{2})",100,0,2,100,0,10);
+TH2F *hQ2_W = new TH2F("Q2_W",";Q^{2}(GeV^{2});W (GeV)",Q2max*10,0,Q2max,100,0,10);
+TH2F *ht_Q2 = new TH2F("t_Q2",";-t (GeV^{2});Q^{2}(GeV^{2})",100,0,2,Q2max*10,0,Q2max);
 TH2F *ht_xip = new TH2F("t_xip",";-t (GeV^{2});#xi'",100,0,2,200,-1,1);
 TH2F *ht_xi = new TH2F("t_xi",";-t(GeV^{2});#xi",100,0,2,100,0,1);
 
 TH2F *hxbj_xip = new TH2F("xbj_xip",";x_{B};#xi'",100,0,1,200,-1,1);
 TH2F *hxbj_xi = new TH2F("xbj_xi",";x_{B};#xi",100,0,1,100,0,1);
-TH2F *hxbj_Q2= new TH2F("xbj_Q2",";x_{B};Q^{2}(GeV^{2})",100,0,1,100,0,10);
+TH2F *hxbj_Q2= new TH2F("xbj_Q2",";x_{B};Q^{2}(GeV^{2})",100,0,1,Q2max*10,0,Q2max);
 TH2F *hxip_xi = new TH2F("xip_xi",";#xi';#xi;",100,-1,1,100,0,1);
-TH2F *hQ2_Qp2 = new TH2F("Q2_Qp2",";Q^{2}(GeV^{2});Q'^{2}(GeV^{2})",100,0,10,100,0,10);
+TH2F *hQ2_Qp2 = new TH2F("Q2_Qp2",";Q^{2}(GeV^{2});Q'^{2}(GeV^{2})",Q2max*10,0,Q2max,Qp2max*10,0,Qp2max);
 
 TH2F *htmin_W = new TH2F("tmin_W",";tmin (GeV^{2});W (GeV)",100,0,5,100,0,10);
 TH2F *htmax_W = new TH2F("tmax_W",";tmax (GeV^{2});W (GeV)",100,0,5,100,0,10);	
@@ -417,7 +425,8 @@ TH2F *htmax_W = new TH2F("tmax_W",";tmax (GeV^{2});W (GeV)",100,0,5,100,0,10);
 const int n=10;
 TH1F *hcount[n];
 for(int i=0;i<n;i++){  
-  hcount[i]=new TH1F(Form("hcount%i",i),"SoLID DDVCS,lumi 1e37/cm2/s,50 days,eff 70\%;#phi (deg);count",12,0,360);
+//   hcount[i]=new TH1F(Form("hcount%i",i),"SoLID DDVCS,lumi 1e37/cm2/s,50 days,eff 70\%;#phi (deg);count",12,0,360);
+    hcount[i]=new TH1F(Form("hcount%i",i),"BH crosssection;#phi (deg);total crosssection (pb)",12,0,360);
 }
 
 // const int m=4;
@@ -438,8 +447,7 @@ for(int k=0;k<m;k++){
   char hstname[100];
   for(int l=0;l<4;l++){  
    sprintf(hstname,"ThetaP_%i_%i",l,k);
-   hThetaP[l][k]=new TH2F(hstname,Form("%s;#theta_{lab} (deg);P (GeV)",title[l]),180,0,180,800,0,10);
-//    hThetaP[l][k]=new TH2F(hstname,Form("%s;#theta_{lab} (deg);P (GeV)",title[l]),180,0,180,250,0,25);   //for 22gev
+   hThetaP[l][k]=new TH2F(hstname,Form("%s;#theta_{lab} (deg);P (GeV)",title[l]),180,0,180,Pmax*10,0,Pmax);
    sprintf(hstname,"ThetaPhi_%i_%i",l,k);
    hThetaPhi[l][k]=new TH2F(hstname,";#theta_{lab} (deg);#phi_{lab} (deg)",180,0,180,100,-180.,180.);   
   }
@@ -472,14 +480,14 @@ for(int k=0;k<m;k++){
 
   
   sprintf(hstname,"lepIM_2D_%i",k);
-  hlepIM_2D[k] = new TH2F(hstname,";e+ e-(1st) Inv Mass (GeV);e+ e-(2nd) Inv Mass (GeV)",80,0,4.0,80,0,4.0);   
+  hlepIM_2D[k] = new TH2F(hstname,";e+ e-(1st) Inv Mass (GeV);e+ e-(2nd) Inv Mass (GeV)",100,0,5.0,100,0,5.0);   
   
   sprintf(hstname,"lepIM1_%i",k);
-  hlepIM1[k] = new TH1F(hstname,hstname,80,0,4);   
+  hlepIM1[k] = new TH1F(hstname,hstname,100,0,5);   
   sprintf(hstname,"lepIM2_%i",k);
-  hlepIM2[k] = new TH1F(hstname,hstname,80,0,4);   
+  hlepIM2[k] = new TH1F(hstname,hstname,100,0,5);   
   sprintf(hstname,"lepIM_%i",k);
-  hlepIM[k] = new TH1F(hstname,hstname,80,0,4);
+  hlepIM[k] = new TH1F(hstname,hstname,100,0,5);
 
   sprintf(hstname,"lepIM1_error_%i",k);
   hlepIM1_error[k] = new TH1F(hstname,hstname,20,0,4.0);   
@@ -489,13 +497,13 @@ for(int k=0;k<m;k++){
   hlepIM_error[k] = new TH1F(hstname,hstname,20,0,4.0);
   
   sprintf(hstname,"t_Qp2_xip_%i",k);
-  ht_Qp2_xip[k]=new TH3F(hstname,hstname,100,0,0.5,100,0,10,100,0,5);
+  ht_Qp2_xip[k]=new TH3F(hstname,hstname,100,0,1,Qp2max*10,0,Qp2max,100,0,5);
   ht_Qp2_xip[k]->SetTitle(";#eta;Q'^{2}(GeV^{2});t(GeV^{2})");      
   sprintf(hstname,"Qp2_xip_%i",k);
-  hQp2_xip[k]=new TH2F(hstname,hstname,100,0,0.5,100,0,10);
+  hQp2_xip[k]=new TH2F(hstname,hstname,100,0,1,Qp2max*10,0,Qp2max);
   hQp2_xip[k]->SetTitle(";#eta;Q'^{2}(GeV^{2})");
   sprintf(hstname,"Qp2_t_%i",k);  
-  hQp2_t[k]=new TH2F(hstname,hstname,100,0,5,100,0,10);
+  hQp2_t[k]=new TH2F(hstname,hstname,100,0,5,Qp2max*10,0,Qp2max);
   hQp2_t[k]->SetTitle(";t(GeV^{2});Q'^{2}(GeV^{2})");  
 }
 
@@ -853,8 +861,10 @@ else {cout << "not supported evgen " << evgen << endl; return;}
 	  if(evgen=="grape"){
 // 	    acc_ep= acc_ep_FA+acc_ep_LA+acc_ep_barrel;
 // 	    acc_em= acc_em_FA+acc_em_LA+acc_em_barrel;	
-	    acc_ep= acc_ep_FA;
-	    acc_em= acc_em_FA;	    
+	    acc_ep= acc_ep_FA+acc_ep_LA+acc;
+	    acc_em= acc_em_FA+acc_em_LA+acc;	
+// 	    acc_ep= acc_ep_FA;
+// 	    acc_em= acc_em_FA;	    
 	  }    
 	  else if(evgen=="twopeg"){
 	    double acc_pim_FA_p,acc_pim_LA_p,acc_pim_barrel_p,acc_pip_FA_p,acc_pip_LA_p,acc_pip_barrel_p;
@@ -1219,10 +1229,11 @@ if (Is_res &&  acc>0){
       weight[0]=1;
       weight[1]=acc;
       weight[2]=acc*effxsec;
-      weight[3]=acc*effxsec*count_convert;
-//       weight[4]=acc*effxsec*count_convert*(-t<Q2); //-t<Q2 factorization condition maybe reduced by larger Q'2
+//       weight[3]=acc*effxsec*count_convert;
+      weight[3]=effxsec*(0.05<Q2 && Q2<10)*(2<Qp2 && Qp2<10)*(-1.2<t && t<0)*(0.001<xi && xi<0.7);
+      weight[4]=acc*effxsec*count_convert*(-t<Q2); //-t<Q2 factorization condition maybe reduced by larger Q'2
 //       weight[4]=acc*effxsec*count_convert*(1<InvM_epm1 && InvM_epm1<3);      
-      weight[4]=acc*effxsec*count_convert*(1<InvM_epm1);
+//       weight[4]=acc*effxsec*count_convert*(1<InvM_epm1);
       
 //      if (Q2<1) continue;     
 //      if (Qp2<1) continue;          
@@ -1315,11 +1326,13 @@ if (Is_res &&  acc>0){
 // // 	      cout << "range " << xip << " " << Q2 << " " << InvM_epm1<<endl;
 // 	    }
 
-	    if(abs(xi-0.135)<0.015 && abs(-t-0.25)<0.05){
-	      if(abs(xip+0.06)<0.03 && abs(Q2-1.25)<0.25) {hcount[0]->Fill(Phi_LH*DEG,weight[windex]);}
-	      if(abs(xip-0.075)<0.05 && abs(Q2-2.5)<1) {hcount[1]->Fill(Phi_LH*DEG,weight[windex]);}
-// 	      cout << "range " << xip << " " << Q2 << " " << InvM_epm1<<endl;
-	    }
+// 	    if(abs(xi-0.135)<0.015 && abs(-t-0.25)<0.05){
+// 	      if(abs(xip+0.06)<0.03 && abs(Q2-1.25)<0.25) {hcount[0]->Fill(Phi_LH*DEG,weight[windex]);}
+// 	      if(abs(xip-0.075)<0.05 && abs(Q2-2.5)<1) {hcount[1]->Fill(Phi_LH*DEG,weight[windex]);}
+// // 	      cout << "range " << xip << " " << Q2 << " " << InvM_epm1<<endl;
+// 	    }
+	  
+	    if (weight[windex]>0) hcount[0]->Fill(Phi_LH*DEG,weight[windex]);
 
 // 	    if(0<=xi && xi<0.05) && (0<=-t && -t<0.1){
 // 	      hxip_Q2[0]->Fill(xip,Q2,weight[windex]);	
@@ -1446,8 +1459,8 @@ leg4->Draw();
 //   }
  
   TCanvas *c_lepIM1_count = new TCanvas("lepIM1_count","lepIM1_count",1200,900);
-  hlepIM1[3]->SetTitle("count/50MeV;l^{+}l^{-} InvM (GeV);");
-  hlepIM1[3]->Draw("HIST");
+  hlepIM1[windex]->SetTitle("count/50MeV;l^{+}l^{-} InvM (GeV);");
+  hlepIM1[windex]->Draw("HIST");
   c_lepIM1_count->SaveAs(Form("%s/lepIM1_count.png",input_filedir.c_str()));
   c_lepIM1_count->SaveAs(Form("%s/lepIM1_count.pdf",input_filedir.c_str()));        
   
@@ -1717,9 +1730,10 @@ hacc_Qp2_t->Draw("colz");
 //   hemscat->Draw("same");
 
 //   cout << "BH 3-3.25 GeV " <<  hlepIM2->Integral(20,45) << endl;  //pure count and no width
-  cout << "BH events counts at 2<InvM1<3 GeV " <<  hlepIM1[3]->Integral(40,60) << endl;  //pure count and no width
-  cout << "BH events counts at 1<InvM1<3 GeV " <<  hlepIM1[3]->Integral(20,60) << endl;  //pure count and no width  
-  cout << "BH events counts at 0<InvM1<3 GeV " <<  hlepIM1[3]->Integral(0,60) << endl;  //pure count and no width    
+  cout << "BH events counts at 2<InvM1<3 GeV " <<  hlepIM1[windex]->Integral(40,60) << endl;  //pure count and no width
+  cout << "BH events counts at 1<InvM1<3 GeV " <<  hlepIM1[windex]->Integral(20,60) << endl;  //pure count and no width  
+  cout << "BH events counts at 0<InvM1<3 GeV " <<  hlepIM1[windex]->Integral(0,60) << endl;  //pure count and no width
+  cout << "BH events counts at 0<InvM1<4 GeV " <<  hlepIM1[windex]->Integral(0,80) << endl;  //pure count and no width      
 //   cout << "BH events counts at 2<InvM1<3 GeV and additional cut " <<  hlepIM1[4]->Integral(40,60) << endl;  //pure count and no width    
 
 outputfile->Write();

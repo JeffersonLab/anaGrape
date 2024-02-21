@@ -1,44 +1,66 @@
 {
   gROOT->Reset();
-gStyle->SetPalette(1);
+// gStyle->SetPalette(1);
 gStyle->SetOptStat(0);
+
+  gStyle->SetPadBottomMargin(0.15);
+  gStyle->SetPadTopMargin(0.1);
+  gStyle->SetPadLeftMargin(0.15);
+  gStyle->SetPadRightMargin(0.15);  
+  
+  gStyle->SetPadColor(0);
+
+  gStyle->SetLabelSize(0.04,"xyz"); // size of axis values
+  gStyle->SetTitleSize(0.04,"xyz");   
+  gStyle->SetTitleSize(0.07,"t");    
+  gStyle->SetPaintTextFormat("4.1f");   
+
+char hstname[100],title[100]; 
 
 // const int n=4;
 // char *name[n]={"BHinterNO","BHinter","Compton","QED"};
-const int n=3;
-
-char hstname[100],title[100]; 
 
 // char *name[n]={"BH_muon_3fold_decaypairproton_deg5-50","BH_muon_3fold_decaypairelectron_deg5-50","BH_muon_4fold_deg5-50"};
 // char *label[n]={"recoil proton and decay pair","scattered e- and decay pair","all 4 particles"};
 // sprintf(hstname,"lepIM1_3");
 
-char *name[n]={
-"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50",
-"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50",
-"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_dis_deg5-50",
+const int n=2;
+char *filename[n]={
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FA_yessmear/output.root",
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50/FA_yessmear/output.root",
 };
-// char *label[n]={"elastic","quasi-elastic","DIS"};
-char *label[n]={"BH","BH+pi0","DIS"};
+// char *label[n]={"elastic","quasi-elastic"};
+char *label[n]={"BH","BH+pi0"};
 sprintf(hstname,"MM");
 sprintf(title,"missing mass of proton");
+int color[n]={0,1};
 
-// int color[3]={kBlack,kRed,kGreen};
-int color[3]={0,1,2};
+// const int n=4;
+// char *filename[n]={
+// "acc_solid_JPsi_DDVCS_LH2/solid_JPsi_DDVCS_LH2_moved_full_even_pim_theta12_1e6_output_final_1D_direct.root",
+// "acc_solid_JPsi_DDVCS_LH2/solid_JPsi_DDVCS_LH2_moved_full_even_pim_theta12_1e6_output_final_1D_all.root",
+// "acc_solid_JPsi_DDVCS_LH2/solid_JPsi_DDVCS_LH2_moved_full_even_pim_theta12_1e6_output_final_1D_directdecay.root",
+// "acc_solid_JPsi_DDVCS_LH2/solid_JPsi_DDVCS_LH2_moved_full_even_pim_theta12_1e6_output_final_1D_alldecay.root",
+// };
+// char *label[n]={"primary pion","primary and secondary pion","muon from primary pion decay","muon from primary and secondary pion decay"};
+// sprintf(hstname,"acceptance_P_0");
+// sprintf(title,"surviving probability at forward angle muon detector");
+// int color[n]={0,1,2,3};
 
-TFile *file[6];
-TH1F *h[6];
-TCanvas *c = new TCanvas("c","c",1000,800);
-TLegend* leg = new TLegend(0.75, 0.9-0.05*6, 0.95, 0.95);
+TFile *file[n];
+TH1F *h[n];
+TCanvas *c = new TCanvas("c","c",1100,800);
+TLegend* leg = new TLegend(0.8, 0.8, 0.95, 0.95);
+// TLegend* leg = new TLegend(0.6, 0.7, 0.95, 0.95);
 for (Int_t i=0;i<n;i++) {
-  if (i==2) continue;
+//   if (i==2) continue;
   cout << i << endl;
   
 //   cout << Form("%s/grp_out.root",name[i]) << endl;
 //   file[i]=new TFile(Form("%s/acceptance_forward/grp_out.root",name[i]));  
 //   file[i]=new TFile(Form("%s/acceptance_forwardandlarge/grp_out.root",name[i]));    
 //   file[i]=new TFile(Form("%s/grp_out.root",name[i]));
-  file[i]=new TFile(Form("%s/output.root",name[i]));        
+  file[i]=new TFile(Form("%s",filename[i]));        
 
   h[i]=(TH1F*) file[i]->Get(hstname);
 //   hacceptance_P[i]=(TH1F*) file[i]->Get("acceptance_P");
@@ -48,6 +70,7 @@ for (Int_t i=0;i<n;i++) {
 //    h[i]->SetLineColor(color[i]);
 //  h[i]->SetMaximum(5e5); 
 //  h[i]->SetMaximum(1.5e-5); 
+//  h[i]->SetMaximum(0.05);  
  h[i]->SetTitle(title);
  if (i==0) h[i]->Draw();
  else h[i]->Draw("same");

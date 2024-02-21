@@ -37,19 +37,19 @@ similar result comparing to LPAIR, see http://research.kek.jp/people/tabe/grape/
 
 ### general note 
 
-0. Be careful with NCALL input, too large it can take long time to run bases, too small will reduce accuracy
-1. turn ISR on for initial radiation for electron beam. there is no way to make radiation for final state particle of elastic channel yet. (PSFSR doesn't work for this)
-2. add "RNDGEN true" in "grape.cards" to use non-default random seed. Otherwise every time, you will re-generate the same events. you need to "mv rndstat.dat rndstat.dat.prev" every time if you want to get new events. This means we can't use grape in farm jobs directly and we have to generate many files first as farm job input. refer to http://research.kek.jp/people/tabe/grape/FAQ/rndstat.html
-3. Various cuts like mom and angle etc can be applied in the input file, they can be used carefully to focus the simulation on interested physical region and particular detector acceptance and trigger condition.
-4. with interference on for electron pair, the scattering e- and decay e- are not distinguishable. Absolutely NO cut can be applied on any of them without careful consideration, like PMIN,PMAX,THMIN,THMAX,MASSLL etc.
-5. with interference on for electron pair, a lepton stored in the 8th line has smaller transverse momentum than that of a lepton in the 10th line of the output
+1. Be careful with NCALL input, too large it can take long time to run bases, too small will reduce accuracy
+2. turn ISR on for initial radiation for electron beam. there is no way to make radiation for final state particle of elastic channel yet. (PSFSR doesn't work for this)
+3. add "RNDGEN true" in "grape.cards" to use non-default random seed. Otherwise every time, you will re-generate the same events. you need to "mv rndstat.dat rndstat.dat.prev" every time if you want to get new events. This means we can't use grape in farm jobs directly and we have to generate many files first as farm job input. refer to http://research.kek.jp/people/tabe/grape/FAQ/rndstat.html
+4. Various cuts like mom and angle etc can be applied in the input file, they can be used carefully to focus the simulation on interested physical region and particular detector acceptance and trigger condition.
+5. with interference on for electron pair, the scattering e- and decay e- are not distinguishable. Absolutely NO cut can be applied on any of them without careful consideration, like PMIN,PMAX,THMIN,THMAX,MASSLL etc. A lepton stored in the 8th line has smaller transverse momentum than that of a lepton in the 10th line of the output
 6. output has two trees "h1" including event info, refer to http://research.kek.jp/people/tabe/grape/CPC/node8.html
 7. total cross section in pb for the simulated phase space,divide it by number of event generated to have the correct weight for each event. It's stored in several places
    (a) tree "h11" including xsec[0]
    (b) section "Convergency Behavior for the Integration Step" of the "integ" log file "bases.result". It's the last iteration of the entry "Estimate(+- Error )order". It's a good idea to check to see these iteration converges.
    (c) display at end of running "spring", thus stored in file "spring.log"
-8. Its default +Z axis is along proton beam direction.This applies to Theta angle in input file. To analyze its output in +Z along electron beam direction, we need to do rotation for all particle TLorentzVector by RotateY(TMath::Pi()). if we are using electron beam direction as +Z axis, we need to rotate along Y 180 degree to analyses results
-9. when using multiple root files produced with exact same input file, the correct weight factor is (total crossection)/(total event numbers of all files)
+8. when using multiple root files produced with exact same input file, the correct weight factor is (total crossection)/(total event numbers of all files)   
+9. Its default +Z axis is along proton beam direction.This applies to Theta angle in input file. To analyze its output in +Z along electron beam direction, we need to do rotation for all particle TLorentzVector by RotateY(TMath::Pi()). if we are using electron beam direction as +Z axis, we need to rotate along Y 180 degree to analyses results
+10. Elastic and quasi-elastic (with additional pi0 mass) are ok for proton at rest, but DIS mode doesn't work for proton as rest, refer to https://research.kek.jp/people/tabe/grape/FAQ/patrest.html
 
 ### known problem
 1. occasionally, integ wouldn't end because grid calculation can't converge for certain configuration. 
