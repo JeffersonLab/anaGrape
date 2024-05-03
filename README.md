@@ -14,6 +14,9 @@ similar result comparing to LPAIR, see http://research.kek.jp/people/tabe/grape/
 
 * convert grape output ntuple "grp.rz" or "grp.hbook" to root file "grp.root" by "h2root grp.rz" or "h2root grp.hbook"
 
+Some grape.cards are included here as examples.
+The author's ifarm working dir is at /work/solid/zwzhao/BH/grape-dilepton_work
+
 ### run using container at jlab ifarm
 
 * module load singularity/3.9.5
@@ -71,58 +74,55 @@ file "twopeg.dat" in lund format should be produced
 
 root2lund_grape-dilepton.C to convert "grp.root" to "grp.lund" with vertex info added
 
+ana_grape_twopeg.C can be used to analyze both grape and twopeg output
+
+(outdated) anaGrape.C can be used to analyze grape output
+
 compare.C to compare different histograms
 
-ana_grape_twopeg.C can be used to analyze both grape and twopeg output
+```
+prepare to run analysis
+
+(needed for SoLID track smearing)
+git clone https://github.com/JeffersonLab/solid_gemc solid_gemc_location
+or you can use the existing ifarm location /group/solid/solid_github/JeffersonLab/solid_gemc
+
+git clone https://github.com/JeffersonLab/anaGrape.git
+cd anaGrape
+ln -s solid_gemc_location/analysis/tracking_resolution ./
+ln -s tracking_resolution/res_file ./
 
 ```
 how to run ana_grape_twopeg.C
 
-git clone https://github.com/JeffersonLab/anaGrape.git
-cd anaGrape
+(It's too slow to run as script, so better to run after compiling)
 
-(acceptance file and resolution file are needed for analysis code to work)
-wget https://github.com/JeffersonLab/solid_gemc/raw/master/analysis/acceptance/result_JPsi/201501/acceptance_solid_JPsi_electron_target315_output.root
-wget https://solid.jlab.org/files/sim/ddvcs/solid_JPsi_DDVCS_LH2_moved_full_even_mum_9e6_output_final.root
+The code take input as follows
+ana_grape_twopeg(string evgen="",string detector="",string input_filedir="",double Ebeam=11,bool Is_res=false,string decaypair="e",int decaymode=0)  //Is_res and decaypair are needed for track smearing, decaymode are needed for twopeg generator
 
-download the dir below somewhere
-https://github.com/JeffersonLab/solid_gemc/tree/master/analysis/tracking_resolution
-then make a link by "ln -s the_dir_of_tracking_resolution ./"
-then "ln -s tracking_resolution/res_file ./"
+here are some examples
 
-(It's too slow to run as script, need to run after compiling)
+root 'ana_grape_twopeg.C+("grape","CLAS12","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_ele_3fold_decaypairelectron_deg1-50")'
+
+root 'ana_grape_twopeg.C+("grape","SoLID_JPsi","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_ele_3fold_decaypairelectron_deg1-50")'
+
+(need more acceptance file to analyze twopeg output, will add later)
 
 root 'ana_grape_twopeg.C+("grape","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50")'
 
-root 'ana_grape_twopeg.C+("grape","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50",true,"mu")'
+root 'ana_grape_twopeg.C+("grape","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50",11,true,"mu")'
 
-root 'ana_grape_twopeg.C+("twopeg","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/twopion/commit7034d9f_20201215/SoLID_JPsi_LH2_e_E11",false,"mu",3)'
-(need more acceptance file for twopeg to run, will add later)
-
-```
-
-(outdated) anaGrape.C can be used to analyze grape output
+root 'ana_grape_twopeg.C+("twopeg","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/twopion/commit7034d9f_20201215/SoLID_JPsi_LH2_e_E11",11,false,"mu",3)'
 
 ```
 how to run anaGrape.C
 
-git clone https://github.com/JeffersonLab/anaGrape.git
-cd anaGrape
-
-(acceptance file and resolution file are needed for analysis code to work)
-wget https://github.com/JeffersonLab/solid_gemc/raw/master/analysis/acceptance/result_JPsi/201501/acceptance_solid_JPsi_electron_target315_output.root
-wget https://solid.jlab.org/files/sim/ddvcs/solid_JPsi_DDVCS_LH2_moved_full_even_mum_9e6_output_final.root
-
-download the dir below somewhere
-https://github.com/JeffersonLab/solid_gemc/tree/master/analysis/tracking_resolution
-then make a link by "ln -s the_dir_of_tracking_resolution ./"
-
 cd where_grp.root_is
 ln -s where_anaGrape ./
 ln -s anaGrape/tracking_resolution/res_file ./
-root 'anaGrape/anaGrape.C+("SoLID_DDVCS_JPsi",false)' (It's too slow to run as script, need to run after compiling)
+root 'anaGrape/anaGrape.C+("SoLID_JPsi",false)' (It's too slow to run as script, need to run after compiling)
 
-The 1st parameter can be SoLID or CLAS12 for detector
+The 1st parameter can be SoLID_JPsi or CLAS12 for detector
 
 The 2nd parameter as true or false to control if the code should smear particle 4-momentum according to SoLID momentum resolution.
 ```
