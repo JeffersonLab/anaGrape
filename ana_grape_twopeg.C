@@ -22,7 +22,10 @@ using namespace std;
 // void anaGrape(string input_filedir,string detector=""){
 // void anaGrape(string detector="",bool Is_inter=false){
 // void anaGrape(string detector="",bool Is_res=false){
-void ana_grape_twopeg(string evgen="",string detector="",string input_filedir="",double Ebeam=11,bool Is_res=false,string decaypair="e",int decaymode=0)  //Is_res and decaypair are needed for track smearing, decaymode are needed for twopeg generator
+void ana_grape_twopeg(string evgen="",string detector="",string input_filedir="",int windex=3,double Ebeam=11,bool Is_res=false,string decaypair="e",int decaymode=0)  
+//windex to select weight, Ebeam to set beam energy
+//Is_res and decaypair are needed for track smearing
+//decaymode are needed for twopeg generator
 {
 //  set_style();
 gROOT->Reset();
@@ -47,9 +50,6 @@ gStyle->SetOptFit(1);
 
 Lresolution track("JPsi");
 TRandom3 rnd;  
-
-int windex=3;  //select weight_as counts without cut
-// int windex=4;  //select weight_as counts with cut
 
 int Pmax,Q2max,Qp2max;
 if (Ebeam==11){
@@ -107,7 +107,8 @@ if (detector=="CLAS12"){
 //   resolution_p[1]=0.05;resolution_theta[1]=10e-3;resolution_phi[1]=5e-3;   
 }
 else if (detector=="SoLID_JPsi"){  
-  TFile *acceptancefile=new TFile("acceptance_solid_JPsi_electron_target315_output.root");  
+//   TFile *acceptancefile=new TFile("acceptance_solid_JPsi_electron_target315_output.root");  
+  TFile *acceptancefile=new TFile("acceptance_solid_JPsi_target315_24GeV_electron_1e7_201501_output_final.root");    
   
   hacceptance_ThetaP_forwardangle=(TH2F*) acceptancefile->Get("acceptance_ThetaP_forwardangle");  
   hacceptance_ThetaP_largeangle=(TH2F*) acceptancefile->Get("acceptance_ThetaP_largeangle");
@@ -142,7 +143,8 @@ else if (detector=="SoLID_JPsi"){
 //   resolution_p[1]=0.05;resolution_theta[1]=10e-3;resolution_phi[1]=5e-3;     
 }
 else if (detector=="SoLID_DDVCS_JPsi"){  
-  TFile *acceptancefile=new TFile("acceptance_solid_JPsi_electron_target315_output.root");  
+//   TFile *acceptancefile=new TFile("acceptance_solid_JPsi_electron_target315_output.root");  
+  TFile *acceptancefile=new TFile("acceptance_solid_JPsi_target315_24GeV_electron_1e7_201501_output_final.root");    
   
   hacceptance_ThetaP_forwardangle=(TH2F*) acceptancefile->Get("acceptance_ThetaP_forwardangle");  
   hacceptance_ThetaP_largeangle=(TH2F*) acceptancefile->Get("acceptance_ThetaP_largeangle");
@@ -405,6 +407,7 @@ TH2F *hMM_t = new TH2F("MM_t","; MM (GeV);-t (GeV^{2})",150,0.5,2,100,0,2);
 
 TH1F *ht = new TH1F("t","t",600,0,6);
 
+TH2F *ht_Q2Qp2 = new TH2F("t_Q2Qp2",";-t (GeV^{2});Q2+Q'^{2}(GeV^{2})",100,0,2,(Q2max+Qp2max)*10,0,Q2max+Qp2max);
 TH2F *ht_Qp2 = new TH2F("t_Qp2",";-t (GeV^{2});Q'^{2}(GeV^{2})",100,0,2,Qp2max*10,0,Qp2max);
 TH2F *ht_W = new TH2F("t_W",";-t (GeV^{2});W (GeV)",100,0,2,100,0,10);
 TH2F *hQ2_W = new TH2F("Q2_W",";Q^{2}(GeV^{2});W (GeV)",Q2max*10,0,Q2max,100,0,10);
@@ -861,10 +864,10 @@ else {cout << "not supported evgen " << evgen << endl; return;}
 	  if(evgen=="grape"){
 // 	    acc_ep= acc_ep_FA+acc_ep_LA+acc_ep_barrel;
 // 	    acc_em= acc_em_FA+acc_em_LA+acc_em_barrel;	
-	    acc_ep= acc_ep_FA+acc_ep_LA+acc;
-	    acc_em= acc_em_FA+acc_em_LA+acc;	
-// 	    acc_ep= acc_ep_FA;
-// 	    acc_em= acc_em_FA;	    
+// 	    acc_ep= acc_ep_FA+acc_ep_LA;
+// 	    acc_em= acc_em_FA+acc_em_LA;	
+	    acc_ep= acc_ep_FA;
+	    acc_em= acc_em_FA;	    
 	  }    
 	  else if(evgen=="twopeg"){
 	    double acc_pim_FA_p,acc_pim_LA_p,acc_pim_barrel_p,acc_pip_FA_p,acc_pip_LA_p,acc_pip_barrel_p;
@@ -940,7 +943,7 @@ else {cout << "not supported evgen " << evgen << endl; return;}
 
 // 	  acc=acc_kp*acc_ep*acc_em*acc_prot;	  
 	  acc=acc_kp*acc_ep*acc_em;
-// 	  acc=acc_kp*acc_ep_FA*acc_em_FA;	  	  	  	  
+// 	  acc=acc_ep*acc_em*acc_prot;
 	  
 // 	  acc=acc_prot*acc_ep*acc_kp*acc_em;	  
 // 	  acc=acc_prot*acc_ep*acc_em;	  	  	  	  
@@ -1138,10 +1141,11 @@ if (Is_res &&  acc>0){
 //       double eta=Qp2/(2*s-2*M*M-Qp2);   //       tau/(2-tau)=Qp2/(2*s-2*M*M-Qp2)
 //       double eta=Qp2/(2*(s-M*M)-Qp2-t);  //this is detailed defination  
 //      double eta=Qp2/(2*s-Qp2);       //eta in TCS is similar to xi in DVCS 
-     
-     //according to DDVCS
+
+         //according to ???
 //      double xi=(Q2-Qp2+delta2/2.)/(2.*Q2/xbj-Q2-Qp2+delta2);
 //      double eta=-(Q2+Qp2)/(2.*Q2/xbj-Q2-Qp2+delta2);     
+     //according to e+ DDVCS paper
      double xi=(Q2+Qp2)/(2.*Q2/xbj-Q2-Qp2+delta2);     
      double xip=(Q2-Qp2+delta2/2.)/(2.*Q2/xbj-Q2-Qp2+delta2);
       
@@ -1229,9 +1233,10 @@ if (Is_res &&  acc>0){
       weight[0]=1;
       weight[1]=acc;
       weight[2]=acc*effxsec;
-//       weight[3]=acc*effxsec*count_convert;
-      weight[3]=effxsec*(0.05<Q2 && Q2<10)*(2<Qp2 && Qp2<10)*(-1.2<t && t<0)*(0.001<xi && xi<0.7);
-      weight[4]=acc*effxsec*count_convert*(-t<Q2); //-t<Q2 factorization condition maybe reduced by larger Q'2
+      weight[3]=acc*effxsec*count_convert;
+//       weight[3]=effxsec*(0.05<Q2 && Q2<10)*(2<Qp2 && Qp2<10)*(-1.2<t && t<0)*(0.001<xi && xi<0.7);
+//       weight[4]=acc*effxsec*count_convert*(-t<Q2); //-t<Q2+Q'2 factorization condition is better      
+      weight[4]=acc*effxsec*count_convert*(-t<Q2+Qp2); //-t<Q2+Q'2 factorization condition is better      
 //       weight[4]=acc*effxsec*count_convert*(1<InvM_epm1 && InvM_epm1<3);      
 //       weight[4]=acc*effxsec*count_convert*(1<InvM_epm1);
       
@@ -1300,6 +1305,7 @@ if (Is_res &&  acc>0){
 	  htmax_W->Fill(W,tmax,weight[windex]);
 	  ht->Fill(-t,weight[windex]);	  
 	  
+	  ht_Q2Qp2->Fill(-t,Q2+Qp2,weight[windex]);
 	  ht_Qp2->Fill(-t,Qp2,weight[windex]);
 	  ht_W->Fill(-t,W,weight[windex]);
 	  hQ2_W->Fill(Q2,W,weight[windex]);	  
@@ -1567,7 +1573,7 @@ hacc_Qp2_t->Draw("colz");
   ht_W->Draw("colz");
   c_kinematics ->cd(3);
   gPad->SetLogz(1);    
-  ht_Q2->Draw("colz");
+  ht_Q2Qp2->Draw("colz");
   c_kinematics ->cd(4);
   gPad->SetLogz(1);    
   ht_xip->Draw("colz");
@@ -1599,7 +1605,7 @@ hacc_Qp2_t->Draw("colz");
   hxbj_Q2->Draw("colz");
   c_kinematics_final->cd(2);  
   gPad->SetLogz(1);  
-  ht_Q2->Draw("colz");  
+  ht_Q2Qp2->Draw("colz");  
   c_kinematics_final->cd(3);  
   gPad->SetLogz(1);  
   hQ2_Qp2->Draw("colz");

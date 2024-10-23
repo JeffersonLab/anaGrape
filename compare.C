@@ -15,7 +15,7 @@ gStyle->SetOptStat(0);
   gStyle->SetTitleSize(0.07,"t");    
   gStyle->SetPaintTextFormat("4.1f");   
 
-char hstname[100],title[100]; 
+char hstname[100],title[100],outname[100]; 
 
 // const int n=4;
 // char *name[n]={"BHinterNO","BHinter","Compton","QED"};
@@ -24,16 +24,43 @@ char hstname[100],title[100];
 // char *label[n]={"recoil proton and decay pair","scattered e- and decay pair","all 4 particles"};
 // sprintf(hstname,"lepIM1_3");
 
+// const int n=2;
+// char *filename[n]={
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FA_yessmear/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50/FA_yessmear/output.root",
+// };
+// // char *label[n]={"elastic","quasi-elastic"};
+// char *label[n]={"BH","BH+pi0"};
+// sprintf(hstname,"MM");
+// sprintf(title,"missing mass of proton");
+// int color[n]={0,1};
+
 const int n=2;
 char *filename[n]={
-"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FA_yessmear/output.root",
-"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50/FA_yessmear/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FA_nosmear_emumup/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairelectron_deg5-50/FA_nosmear_emumup/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FALA_nosmear_emumup/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairelectron_deg5-50/FALA_nosmear_emumup/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FA_nosmear_emumu/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairelectron_deg5-50/FA_nosmear_emumu/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FALA_nosmear_emumu/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairelectron_deg5-50/FALA_nosmear_emumu/output.root",
+
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairelectron_deg5-50/output.root",
+
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairproton_deg5-50/FA_nosmear_mumup/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairproton_deg5-50/FA_nosmear_mumup/output.root",
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairproton_deg5-50/FALA_nosmear_mumup/output.root",
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairproton_deg5-50/FALA_nosmear_mumup/output.root",
 };
-// char *label[n]={"elastic","quasi-elastic"};
-char *label[n]={"BH","BH+pi0"};
-sprintf(hstname,"MM");
-sprintf(title,"missing mass of proton");
+char *label[n]={"11GeV","22GeV"};
+sprintf(hstname,"lepIM1_3");
+// sprintf(hstname,"lepIM1_4");
+sprintf(title,"count/50MeV;l^{+}l^{-} InvM (GeV);");
+sprintf(outname,"compare_solid_ddvcs_11GeV_22GeV_InvM_FALA_nosmear_mumup");
 int color[n]={0,1};
+
 
 // const int n=4;
 // char *filename[n]={
@@ -74,6 +101,7 @@ for (Int_t i=0;i<n;i++) {
  h[i]->SetTitle(title);
  if (i==0) h[i]->Draw();
  else h[i]->Draw("same");
+  cout << "count " << h[i]->Integral() << endl;
  
 // label = new TText(0.5,8e-6+i*2e-6,name[i]);
 // label = new TText(0.5,8e-6+i*2e-6,name[i]); 
@@ -85,6 +113,9 @@ for (Int_t i=0;i<n;i++) {
 }
 
 leg->Draw();
+
+// c->SaveAs(Form("%s.png",outname));
+// c->SaveAs(Form("%s.pdf",outname));
 
 return;
 

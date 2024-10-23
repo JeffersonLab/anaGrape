@@ -98,7 +98,10 @@ how to run ana_grape_twopeg.C
 (It's too slow to run as script, so better to run after compiling)
 
 The code take input as follows
-ana_grape_twopeg(string evgen="",string detector="",string input_filedir="",double Ebeam=11,bool Is_res=false,string decaypair="e",int decaymode=0)  //Is_res and decaypair are needed for track smearing, decaymode are needed for twopeg generator
+  void ana_grape_twopeg(string evgen="",string detector="",string input_filedir="",int windex=3,double Ebeam=11,bool Is_res=false,string decaypair="e",int decaymode=0)  
+  //windex to select weight, Ebeam to set beam energy
+  //Is_res and decaypair are needed for track smearing
+  //decaymode are needed for twopeg generator
 
 here are some examples
 
