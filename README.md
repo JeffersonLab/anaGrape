@@ -17,17 +17,19 @@ similar result comparing to LPAIR, see http://research.kek.jp/people/tabe/grape/
 Some grape.cards are included here as examples.
 The author's ifarm working dir is at /work/solid/zwzhao/BH/grape-dilepton_work
 
-### run using container at jlab ifarm
+### run using container 
 
-* cd somewhere_workdisk
+how to run it at jlab ifarm
+* ssh ifarm
+* cd yourworkdir
 * cp grape.cards_JLab_11_BH_ele_3fold_decaypairelectron_deg5-50 grape.cards (as example)
 * singularity exec /group/solid/apps/grape_1.1.sif integ | cat > integ.log   (take a long time like a few hours)
 * singularity exec /group/solid/apps/grape_1.1.sif spring | cat  > spring.log
 * then a ntuple "grp.hbook" is produced
 
-* you can get your copy of container this way
-* setenv SINGULARITY_CACHEDIR /scratch/$USER
-* setenv SINGULARITY_TMPDIR /scratch/$USER
+get your copy of container and then run at any machine
+* setenv SINGULARITY_CACHEDIR /scratch/$USER  (as example at ifarm, choose your large scratch space)
+* setenv SINGULARITY_TMPDIR /scratch/$USER   (as example at ifarm, choose your large scratch space)
 * singularity pull docker://wmoore28/grape:1.1
 
 
