@@ -100,6 +100,7 @@ ln -s solid_gemc_location/analysis/tracking_resolution ./
 ln -s tracking_resolution/res_file ./
 
 ```
+```
 how to run ana_grape_twopeg.C
 
 (It's too slow to run as script, so better to run after compiling)
@@ -116,14 +117,13 @@ root 'ana_grape_twopeg.C+("grape","CLAS12","/work/halla/solid/zwzhao/BH/grape-di
 
 root 'ana_grape_twopeg.C+("grape","SoLID_JPsi","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_ele_3fold_decaypairelectron_deg1-50")'
 
-(need more acceptance file to analyze twopeg output, will add later)
-
 root 'ana_grape_twopeg.C+("grape","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50")'
 
 root 'ana_grape_twopeg.C+("grape","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50",3,11,true,"mu")'
 
+(need more acceptance file to analyze twopeg output, will add later)
 root 'ana_grape_twopeg.C+("twopeg","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/twopion/commit7034d9f_20201215/SoLID_JPsi_LH2_e_E11",3,11,false,"mu",3)'
-
+```
 ```
 how to run anaGrape.C
 
