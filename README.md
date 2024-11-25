@@ -8,7 +8,7 @@ it was moved from https://jlabsvn.jlab.org/svnroot/solid/evgen/BH/
 * http://research.kek.jp/people/tabe/grape 
 dilepton production generator from electron/positron interacts with proton,used by the experiments at DESY/HERA. 
 including Bethe-Heitler, compton and other electroweak dilepton production for elastic,quasi-elastic and DIS process.
-similar result comparing to LPAIR, see http://research.kek.jp/people/tabe/grape/heramc1998/proceedings/node4.html#SECTION00040000000000000000
+similar result comparing to LPAIR, see http://research.kek.jp/people/tabe/grape/heramc1998/proceedings/node4.html
 
 * Read the website including the note and faq. there is also information in its "README" file of the code package
 
@@ -19,12 +19,17 @@ The author's ifarm working dir is at /work/solid/zwzhao/BH/grape-dilepton_work
 
 ### run using container at jlab ifarm
 
-* module load singularity/3.9.5
-* singularity pull docker://wmoore28/grape:1.1
+* cd somewhere_workdisk
 * cp grape.cards_JLab_11_BH_ele_3fold_decaypairelectron_deg5-50 grape.cards (as example)
-* singularity exec grape_1.1.sif integ | cat > integ.log   (take a long time like a few hours)
-* singularity exec grape_1.1.sif spring | cat  > spring.log
+* singularity exec /group/solid/apps/grape_1.1.sif integ | cat > integ.log   (take a long time like a few hours)
+* singularity exec /group/solid/apps/grape_1.1.sif spring | cat  > spring.log
 * then a ntuple "grp.hbook" is produced
+
+* you can get your copy of container this way
+* setenv SINGULARITY_CACHEDIR /scratch/$USER
+* setenv SINGULARITY_TMPDIR /scratch/$USER
+* singularity pull docker://wmoore28/grape:1.1
+
 
 ### run using virtual machine 
 
@@ -52,7 +57,7 @@ The author's ifarm working dir is at /work/solid/zwzhao/BH/grape-dilepton_work
    (c) display at end of running "spring", thus stored in file "spring.log"
 8. when using multiple root files produced with exact same input file, the correct weight factor is (total crossection)/(total event numbers of all files)   
 9. Its default +Z axis is along proton beam direction.This applies to Theta angle in input file. To analyze its output in +Z along electron beam direction, we need to do rotation for all particle TLorentzVector by RotateY(TMath::Pi()). if we are using electron beam direction as +Z axis, we need to rotate along Y 180 degree to analyses results
-10. Elastic and quasi-elastic (with additional pi0 mass) are ok for proton at rest, but DIS mode doesn't work for proton as rest, refer to https://research.kek.jp/people/tabe/grape/FAQ/patrest.html
+10. Elastic and quasi-elastic (with additional pi0 mass) are ok for proton at rest, but DIS mode doesn't work for proton as rest, so you need to use moving proton then boost to rest. refer to https://research.kek.jp/people/tabe/grape/FAQ/patrest.html
 
 ### known problem
 1. occasionally, integ wouldn't end because grid calculation can't converge for certain configuration. 
@@ -78,7 +83,7 @@ ana_grape_twopeg.C can be used to analyze both grape and twopeg output
 
 (outdated) anaGrape.C can be used to analyze grape output
 
-compare.C to compare different histograms
+compare*.C to compare different histograms
 
 ```
 prepare to run analysis
@@ -113,9 +118,9 @@ root 'ana_grape_twopeg.C+("grape","SoLID_JPsi","/work/halla/solid/zwzhao/BH/grap
 
 root 'ana_grape_twopeg.C+("grape","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50")'
 
-root 'ana_grape_twopeg.C+("grape","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50",11,true,"mu")'
+root 'ana_grape_twopeg.C+("grape","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_quasi_deg5-50",3,11,true,"mu")'
 
-root 'ana_grape_twopeg.C+("twopeg","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/twopion/commit7034d9f_20201215/SoLID_JPsi_LH2_e_E11",11,false,"mu",3)'
+root 'ana_grape_twopeg.C+("twopeg","SoLID_DDVCS_JPsi","/work/halla/solid/zwzhao/twopion/commit7034d9f_20201215/SoLID_JPsi_LH2_e_E11",3,11,false,"mu",3)'
 
 ```
 how to run anaGrape.C

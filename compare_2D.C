@@ -19,12 +19,22 @@ char hstname[100],title[100],outname[100];
 
 const int n=2;
 char *filename[n]={
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/output.root",
+
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/output.root_etheta5-20mom1",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/output.root_etheta5-20phi5-20mom1",
+  
 "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairelectron_deg5-50/FA_nosmear_emumu/output.root",
+  
 // "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FALA_nosmear_22gev/output.root",
-"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FA_nosmear_emumu/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FA_nosmear_emumu/output.root",
+
 };
 char *label[n]={"22GeV","11GeV"};
-sprintf(hstname,"xbj_Q2");
+// sprintf(hstname,"xbj_Q2");
+// sprintf(hstname,"decayangle1_theta_3");
+// sprintf(hstname,"decayangle1_phi_3");
+sprintf(hstname,"decayangle1_thetaphi_3");
 sprintf(outname,"compare_solid_ddvcs_11GeV_22GeV_Q2xbj_FA_nosmear_mumup");
 // sprintf(hstname,"Q2_Qp2");
 // sprintf(outname,"compare_solid_ddvcs_11GeV_22GeV_Q2Qp2_FA_nosmear_emumu");
@@ -50,7 +60,7 @@ TCanvas *c = new TCanvas("c","c",1000,800);
 TLegend* leg = new TLegend(0.8, 0.8, 0.95, 0.95);
 // TLegend* leg = new TLegend(0.6, 0.7, 0.95, 0.95);
 for (Int_t i=0;i<n;i++) {
-//   if (i==2) continue;
+  if (i==1) continue;
   cout << i << endl;
   
 //   cout << Form("%s/grp_out.root",name[i]) << endl;
@@ -86,6 +96,6 @@ for (Int_t i=0;i<n;i++) {
 
 // leg->Draw();
 
-c->SaveAs(Form("%s.png",outname));
-c->SaveAs(Form("%s.pdf",outname));
+// c->SaveAs(Form("%s.png",outname));
+// c->SaveAs(Form("%s.pdf",outname));
 }

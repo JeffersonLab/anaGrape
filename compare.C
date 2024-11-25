@@ -15,7 +15,7 @@ gStyle->SetOptStat(0);
   gStyle->SetTitleSize(0.07,"t");    
   gStyle->SetPaintTextFormat("4.1f");   
 
-char hstname[100],title[100],outname[100]; 
+char hstname[100],title[500],outname[100]; 
 
 // const int n=4;
 // char *name[n]={"BHinterNO","BHinter","Compton","QED"};
@@ -35,6 +35,7 @@ char hstname[100],title[100],outname[100];
 // sprintf(title,"missing mass of proton");
 // int color[n]={0,1};
 
+/*
 const int n=2;
 char *filename[n]={
 // "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FA_nosmear_emumup/output.root",
@@ -46,21 +47,80 @@ char *filename[n]={
 // "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/FALA_nosmear_emumu/output.root",
 // "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairelectron_deg5-50/FALA_nosmear_emumu/output.root",
 
-// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/output.root",
-// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairelectron_deg5-50/output.root",
-
 // "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairproton_deg5-50/FA_nosmear_mumup/output.root",
 // "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairproton_deg5-50/FA_nosmear_mumup/output.root",
-"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairproton_deg5-50/FALA_nosmear_mumup/output.root",
-"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairproton_deg5-50/FALA_nosmear_mumup/output.root",
-};
-char *label[n]={"11GeV","22GeV"};
-sprintf(hstname,"lepIM1_3");
-// sprintf(hstname,"lepIM1_4");
-sprintf(title,"count/50MeV;l^{+}l^{-} InvM (GeV);");
-sprintf(outname,"compare_solid_ddvcs_11GeV_22GeV_InvM_FALA_nosmear_mumup");
-int color[n]={0,1};
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairproton_deg5-50/FALA_nosmear_mumup/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_22_BH_muon_3fold_decaypairproton_deg5-50/FALA_nosmear_mumup/output.root",
 
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_ele_3fold_decaypairelectron_deg5-50_noISR/output.root",    
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_muon_3fold_decaypairelectron_deg5-50_noISR/output.root",
+};
+// char *label[n]={"11GeV","22GeV"};
+char *label[n]={"ele pair","muon pair"};
+sprintf(hstname,"lepIM1_0");
+// sprintf(title,"count/50MeV;l^{+}l^{-} InvM (GeV);");
+sprintf(title,"grape-dilepton elastic,11GeV e- beam on p,with cut e,mu+,mu- angle 5-50deg;l^{+}l^{-} InvM (GeV);crossection(pb/50MeV)");
+sprintf(outname,"compare_solid_ddvcs_11GeV_22GeV_InvM_FALA_nosmear_mumup");
+int color[n]={1,2};
+*/
+
+
+const int n=14;
+char *filename[n]={ 
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_muon_3fold_decaypairelectron_deg5-50/output.root",
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/output.root",
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_ele_3fold_decaypairelectron_deg5-50/output.root",
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_ele_3fold_decaypairelectron_deg5-50/output.root",    
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_ele_3fold_decaypairelectron_deg5-50/output.root",    
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_ele_3fold_decaypairelectron_deg5-50/output.root",    
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BHdirect_ele_3fold_decaypairelectron_deg5-50/output.root",     
+
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_muon_3fold_decaypairelectron_deg5-50_noISR/output.root",
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50_noISR/output.root",
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_ele_3fold_decaypairelectron_deg5-50_noISR/output.root",    
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_ele_3fold_decaypairelectron_deg5-50_noISR/output.root",    
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_ele_3fold_decaypairelectron_deg5-50_noISR/output.root",    
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_ele_3fold_decaypairelectron_deg5-50_noISR/output.root",    
+"/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BHdirect_ele_3fold_decaypairelectron_deg5-50_noISR/output.root",  
+};
+char *label[n]={"ISRon QED muon","ISRon BH muon","ISRon QED ele(highPt)","ISRon QED ele(lowPt)","ISRon BH ele(highPt)","ISRon BH ele(lowPt)","ISRon BHdirect ele","ISRoff QED muon","ISRoff BH muon","ISRoff QED ele(highPt)","ISRoff QED ele(lowPt)","ISRoff BH ele(highPt)","ISRoff BH ele(lowPt)","ISRoff BHdirect ele"};
+sprintf(hstname,"lepIM1_0");
+// sprintf(title,"count/50MeV;l^{+}l^{-} InvM (GeV);");
+sprintf(title,"grape-dilepton elastic,11GeV e- beam on p,with cut e-,mu+,mu- or e-,e+,e- angle 5-50deg;l^{+}l^{-} InvM (GeV);crossection(pb/50MeV)");
+sprintf(outname,"compare_solid_ddvcs_11GeV_22GeV_InvM_FALA_nosmear_mumup");
+int color[n]={1,2,3,4,6,7,8,1,2,3,4,6,7,8};
+int style[n]={1,1,1,1,1,1,1,2,2,2,2,2,2,2};
+
+// const int n=8;
+// char *filename[n]={
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_CO_muon_3fold_decaypairelectron_deg5-50/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_muon_3fold_decaypairelectron_deg5-50/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_EW_muon_3fold_decaypairelectron_deg5-50/output.root",
+// 
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_BH_muon_3fold_decaypairelectron_deg5-50_noISR/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_CO_muon_3fold_decaypairelectron_deg5-50_noISR/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_muon_3fold_decaypairelectron_deg5-50_noISR/output.root",
+// "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_EW_muon_3fold_decaypairelectron_deg5-50_noISR/output.root",
+// 
+// // "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_EW_muon_3fold_decaypairelectron_deg5-50/output.root",
+// // "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_EW_muon_3fold_decaypairelectron_deg5-50_noISR/output.root",
+// 
+// // "/work/halla/solid/zwzhao/BH/grape-dilepton_work/JLab_11_QED_muon_3fold_decaypairelectron_deg1-50/output.root",
+// 
+// 
+// // JLab_11_BH_muon_3fold_decaypairelectron_deg5-50
+// // JLab_11_CO_muon_3fold_decaypairelectron_deg5-50
+// // JLab_11_QED_muon_3fold_decaypairelectron_deg5-50
+// // JLab_11_EW_muon_3fold_decaypairelectron_deg5-50
+// };
+// char *label[n]={"ISRon BH(a)","ISRon Compton(b)","ISRon QED(a+b)","ISRon EW(a+b+c)","ISRoff BH(a)","ISRoff Compton(b)","ISRoff QED(a+b)","ISRoff EW(a+b+c)"};
+// sprintf(hstname,"lepIM1_0");
+// sprintf(title,"grape-dilepton elastic,11GeV e- beam on p,with cut e,mu+,mu- angle 5-50deg;l^{+}l^{-} InvM (GeV);crossection(pb/50MeV)");
+// // sprintf(title,"count/50MeV;l^{+}l^{-} InvM (GeV);");
+// // sprintf(outname,"compare_ddvcs_grape_emumu");
+// int color[n]={1,2,3,4,1,2,3,4};
+// int style[n]={1,1,1,1,2,2,2,2};
 
 // const int n=4;
 // char *filename[n]={
@@ -76,11 +136,13 @@ int color[n]={0,1};
 
 TFile *file[n];
 TH1F *h[n];
-TCanvas *c = new TCanvas("c","c",1100,800);
-TLegend* leg = new TLegend(0.8, 0.8, 0.95, 0.95);
-// TLegend* leg = new TLegend(0.6, 0.7, 0.95, 0.95);
+TH1F *hadd_ISRon,*hadd_ISRoff;
+TCanvas *c = new TCanvas("c","c",1200,800);
+TLegend* leg = new TLegend(0.5, 0.5, 0.9, 0.9);
+// TLegend* leg = new TLegend(0.7, 0.7, 0.9, 0.9);
 for (Int_t i=0;i<n;i++) {
-//   if (i==2) continue;
+//   if (i>2) continue;
+//     if (i==3) sprintf(hstname,"lepIM1_2");
   cout << i << endl;
   
 //   cout << Form("%s/grp_out.root",name[i]) << endl;
@@ -89,31 +151,52 @@ for (Int_t i=0;i<n;i++) {
 //   file[i]=new TFile(Form("%s/grp_out.root",name[i]));
   file[i]=new TFile(Form("%s",filename[i]));        
 
-  h[i]=(TH1F*) file[i]->Get(hstname);
+  h[i]=(TH1F*) file[i]->Get(hstname);  
+  if (i==3||i==5||i==10||i==12) h[i]=(TH1F*) file[i]->Get("lepIM2_0");
+  else h[i]=(TH1F*) file[i]->Get(hstname);
+  
+  if (i==2||i==3||i==9||i==10) h[i]->Scale(0.5);
 //   hacceptance_P[i]=(TH1F*) file[i]->Get("acceptance_P");
 //   hacceptance_Theta[i]=(TH1F*) file[i]->Get("acceptance_Theta");
 //   hacceptance_Q2[i]=(TH1F*) file[i]->Get("acceptance_Q2");
- h[i]->SetLineColor(i+1); 
-//    h[i]->SetLineColor(color[i]);
+//  h[i]->SetLineColor(i+1); 
+   h[i]->SetLineColor(color[i]);
+   h[i]->SetLineStyle(style[i]);  
 //  h[i]->SetMaximum(5e5); 
 //  h[i]->SetMaximum(1.5e-5); 
 //  h[i]->SetMaximum(0.05);  
+//  h[i]->SetMaximum(0.12);   
+ h[i]->SetMaximum(0.4);   
  h[i]->SetTitle(title);
- if (i==0) h[i]->Draw();
- else h[i]->Draw("same");
+ if (i==0) h[i]->Draw("H");
+ else h[i]->Draw("H same");
   cout << "count " << h[i]->Integral() << endl;
+ 
+//  if (i==0) hadd_ISRon=(TH1F*)h[i]->Clone();
+//  if (i==1) hadd_ISRon->Add(h[i]); 
+//  if (i==4) hadd_ISRoff=(TH1F*)h[i]->Clone();
+//  if (i==5) hadd_ISRoff->Add(h[i]); 
  
 // label = new TText(0.5,8e-6+i*2e-6,name[i]);
 // label = new TText(0.5,8e-6+i*2e-6,name[i]); 
 // label->SetTextColor(i+1);
 // label->SetTextSize(0.05);
 // label->Draw();
-  leg->AddEntry(h[i], label[i],"l");  
- 
+//   leg->AddEntry(h[i],label[i],"l");  
+  leg->AddEntry(h[i],Form("%s, integral %1.2f",label[i],h[i]->Integral()),"l");   
 }
 
-leg->Draw();
-
+//   hadd_ISRon->SetLineColor(6);
+//   hadd_ISRon->SetLineStyle(1);  
+//   hadd_ISRon->Draw("H same");
+//   hadd_ISRoff->SetLineColor(6);
+//   hadd_ISRoff->SetLineStyle(2);  
+//   hadd_ISRoff->Draw("H same");
+//   leg->AddEntry(hadd_ISRon,Form("ISRon BH+Compton, integral %1.2f",hadd_ISRon->Integral()),"l");   
+//   leg->AddEntry(hadd_ISRoff,Form("ISRoff BH+Compton, integral %1.2f",hadd_ISRoff->Integral()),"l");   
+  
+  leg->Draw();
+  
 // c->SaveAs(Form("%s.png",outname));
 // c->SaveAs(Form("%s.pdf",outname));
 

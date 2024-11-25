@@ -1,5 +1,6 @@
 #include <iostream> 
 #include <fstream> 
+#include <iomanip>
 #include <TCanvas.h>
 #include <TFile.h>
 #include <TTree.h>
@@ -48,6 +49,7 @@ gStyle->SetOptFit(1);
   gStyle->SetTitleOffset(1,"x");    
   gStyle->SetTitleSize(0.07,"t"); 
 
+cout << "load reack resolution" << endl;
 Lresolution track("JPsi");
 TRandom3 rnd;  
 
@@ -373,12 +375,15 @@ else {cout << "wrong detector" << endl; return;}
 // if (input_filedir.find("3fold_NOp",0) != string::npos)  conf_3fold_NOp=true; 
 // if (input_filedir.find("3fold_NOe",0) != string::npos)  conf_3fold_NOe=true;
 // if (input_filedir.find("validation",0) != string::npos)  conf_validation=true; 
-  
-char output_filename[80];
-sprintf(output_filename, "%s/output.root",input_filedir.c_str());
+
 // sprintf(output_filename, "out.root");
-  
-TFile *outputfile=new TFile(output_filename, "recreate");
+// char output_filename[200];
+// sprintf(output_filename, "%s/output.root",input_filedir.c_str());
+// cout << output_filename << endl;
+// TFile *outputfile=new TFile(output_filename, "recreate");
+
+string output_filename=input_filedir+"/output.root";
+TFile *outputfile=new TFile(output_filename.c_str(), "recreate");
 
 TH1F *hPlog_plus_FA = new TH1F("Plog_plus_FA","mu+ FA;log(P) GeV;kHz",50,-6,1.3);
 TH1F *hPlog_plus_LA = new TH1F("Plog_plus_LA","mu+ LA;log(P) GeV;kHz",50,-6,1.3);
@@ -429,7 +434,7 @@ const int n=10;
 TH1F *hcount[n];
 for(int i=0;i<n;i++){  
 //   hcount[i]=new TH1F(Form("hcount%i",i),"SoLID DDVCS,lumi 1e37/cm2/s,50 days,eff 70\%;#phi (deg);count",12,0,360);
-    hcount[i]=new TH1F(Form("hcount%i",i),"BH crosssection;#phi (deg);total crosssection (pb)",12,0,360);
+    hcount[i]=new TH1F(Form("hcount%i",i),"BH crosssection;#phi (deg);crosssection (pb/30deg)",12,0,360);
 }
 
 // const int m=4;
@@ -444,6 +449,7 @@ TH2F *hlepIM_2D[m];
 TH2F *hdecaymom1[m],*hdecaymom2[m];
 TH2F *hdecayangle1_theta[m],*hdecayangle2_theta[m],*hdecayangle3_theta[m];
 TH2F *hdecayangle1_phi[m],*hdecayangle2_phi[m],*hdecayangle3_phi[m];
+TH2F *hdecayangle1_thetaphi[m],*hdecayangle2_thetaphi[m],*hdecayangle3_thetaphi[m];
 TH2F *hThetaP[4][m],*hThetaPhi[4][m];
 TH1F *hnew_p[m],*hnew_theta[m],*hnew_phi[m];
 for(int k=0;k<m;k++){
@@ -481,12 +487,19 @@ for(int k=0;k<m;k++){
   sprintf(hstname,"decayangle3_theta_%i",k);
   hdecayangle3_theta[k] = new TH2F(hstname,";decay lepton^{-} #theta (deg);scattered lepton #theta (deg)",90,0,90,90,0,90);
 
+  sprintf(hstname,"decayangle1_thetaphi_%i",k);
+  hdecayangle1_thetaphi[k] = new TH2F(hstname,";decay lepton^{+} #theta*180+#phi (deg);decay lepton^{-} #theta*180+#phi (deg)",2*18*9,-180*90,90*180,2*180*90,-180*90,90*180);
+  sprintf(hstname,"decayangle2_thetaphi_%i",k);
+  hdecayangle2_thetaphi[k] = new TH2F(hstname,";decay lepton^{+} #theta*180+#phi (deg);scattered lepton #theta*180+#phi (deg)",2*18*9,-180*90,90*180,2*180*90,-180*90,90*180);
+  sprintf(hstname,"decayangle3_thetaphi_%i",k);
+  hdecayangle3_thetaphi[k] = new TH2F(hstname,";decay lepton^{-} #theta*180+#phi (deg);scattered lepton #theta*180+#phi (deg)",2*18*9,-180*90,90*180,2*180*90,-180*90,90*180);
   
   sprintf(hstname,"lepIM_2D_%i",k);
   hlepIM_2D[k] = new TH2F(hstname,";e+ e-(1st) Inv Mass (GeV);e+ e-(2nd) Inv Mass (GeV)",100,0,5.0,100,0,5.0);   
   
   sprintf(hstname,"lepIM1_%i",k);
   hlepIM1[k] = new TH1F(hstname,hstname,100,0,5);   
+//   hlepIM1[k] = new TH1F(hstname,hstname,95,5,100);     
   sprintf(hstname,"lepIM2_%i",k);
   hlepIM2[k] = new TH1F(hstname,hstname,100,0,5);   
   sprintf(hstname,"lepIM_%i",k);
@@ -537,16 +550,16 @@ if(evgen=="grape"){
 // char* input_filename[1]={"grp.root"};
   sprintf(input_filename, "%s/grp.root",input_filedir.c_str());
 //   sprintf(input_filename, "grp.root");
-
+  
   h11 = new TChain("h11");
   h1 = new TChain("h1");
   for(Int_t i=0; i < 1; i++){
 //     h11->Add(input_filename[i]);
 //     h1->Add(input_filename[i]);  
+	if(!h11->Add(input_filename,0)) return;    
         h11->Add(input_filename);
 	h1->Add(input_filename);  
   }
-
 
   h11->SetBranchStatus("*",0);
   h11->SetBranchStatus("xsec",1);
@@ -585,6 +598,7 @@ else if(evgen=="twopeg"){
     int number_of_lines = 0;
     std::string line;
     std::ifstream myfile(input_filename);
+    if(!myfile.good()) {cout << "file exist?" << endl; return;}    
     while (std::getline(myfile, line)) ++number_of_lines;
     myfile.close();
 //     std::cout << "Number of lines in text file: " << number_of_lines << endl;  
@@ -639,7 +653,8 @@ else {cout << "not supported evgen " << evgen << endl; return;}
     //all entry http://research.kek.jp/people/tabe/grape/CPC/node8.html
     if(i<3) {
       for (Int_t j=0; j < 14; j++) {
-	cout << j << "\t"  << px[j] <<  "\t"  << py[j] <<  "\t"  << pz[j] <<  "\t"  << pe[j] <<  "\t"  << pm[j] <<  "\t"  << kf[j] <<  "\t"  << sta[j] <<  "\t"  << npy[j] << endl; 
+// 	cout << j << "\t"  << px[j] <<  "\t"  << py[j] <<  "\t"  << pz[j] <<  "\t"  << pe[j] <<  "\t"  << pm[j] <<  "\t"  << kf[j] <<  "\t"  << sta[j] <<  "\t"  << npy[j] << endl;
+	cout << j << setw(15)  << px[j] <<  setw(15)  << py[j] <<  setw(15)  << pz[j] <<  setw(15)  << pe[j] <<  setw(15)  << pm[j] <<  setw(15)  << kf[j] <<  setw(15)  << sta[j] <<  setw(15)  << npy[j] << endl;
       }
       cout << "******************************"<< endl;
     }
@@ -652,19 +667,28 @@ else {cout << "not supported evgen " << evgen << endl; return;}
 //       }
 //       cout << endl;
     
-//     targ.SetXYZT(px[0],py[0],pz[0],pe[0]);    
-//     ki.SetXYZT(px[1],py[1],pz[1],pe[1]);    
-//     targ.SetXYZT(px[3],py[3],pz[3],pe[3]);
-//     ki.SetXYZT(px[4],py[4],pz[4],pe[4]);  //electron before ISR(initial state radiation)  
-    targ.SetXYZT(px[4],py[4],pz[4],pe[4]);
-    ki.SetXYZT(px[5],py[5],pz[5],pe[5]); //electron after ISR(initial state radiation)  
+// https://research.kek.jp/people/tabe/grape/CPC/node8.html
+// pe is not very accurate, use pm instead
+// before ISR(initial state radiation)  
+//     targ.SetXYZM(px[0],py[0],pz[0],pm[0]);    
+//     ki.SetXYZM(px[1],py[1],pz[1],pm[1]);    
+//     targ.SetXYZM(px[2],py[2],pz[2],pm[2]);
+//     ki.SetXYZM(px[3],py[3],pz[3],pm[3]);
+// after ISR(initial state radiation)  
+    targ.SetXYZM(px[4],py[4],pz[4],pm[4]);
+    ki.SetXYZM(px[5],py[5],pz[5],pm[5]); 
 // cout <<  targ.P()  << " " <<  ki.P() << endl;
 
-    //particle after FSR (not effective)
-    prot.SetXYZT(px[10],py[10],pz[10],pe[10]);    
-    kp.SetXYZT(px[11],py[11],pz[11],pe[11]);
-    ep.SetXYZT(px[12],py[12],pz[12],pe[12]);
-    em.SetXYZT(px[13],py[13],pz[13],pe[13]);
+    //particle before FSR   
+    prot.SetXYZM(px[6],py[6],pz[6],pm[6]);    
+    kp.SetXYZM(px[7],py[7],pz[7],pm[7]);
+    ep.SetXYZM(px[8],py[8],pz[8],pm[8]);
+    em.SetXYZM(px[9],py[9],pz[9],pm[9]);    
+    //particle after FSR (not effective for leptons for elastic)
+//     prot.SetXYZM(px[10],py[10],pz[10],pm[10]);    
+//     kp.SetXYZM(px[11],py[11],pz[11],pm[11]);
+//     ep.SetXYZM(px[12],py[12],pz[12],pm[12]);
+//     em.SetXYZM(px[13],py[13],pz[13],pm[13]);
 // cout <<  prot.M()  << " " <<  kp.M() << " " << ep.M() << " " << em.M() << endl;
     
     //grape-dilepton use coordinate where electron beam goes along -z
@@ -680,8 +704,8 @@ else {cout << "not supported evgen " << evgen << endl; return;}
   }
   else if(evgen=="twopeg"){
     double Ebeam=11;
-    targ.SetXYZT(0, 0, 0, 0.938);
-    ki.SetXYZT(0,0,sqrt(Ebeam*Ebeam - 0.511e-3 * 0.511e-3),Ebeam);
+    targ.SetXYZT(0, 0, 0, 0.938272);
+    ki.SetXYZT(0,0,Ebeam,sqrt(Ebeam*Ebeam + 0.511e-3 * 0.511e-3));
 
 // 4  1.  1.  0  0  4  0  1.889796  6.553975  0.000018
 //  1  -1.  1  11  0  0  -1.877907  -0.057927  5.775509  6.073417  0.0005  0.0000  0.0000  -316.194641
@@ -806,12 +830,13 @@ else {cout << "not supported evgen " << evgen << endl; return;}
 	  acc_em= acc_em_LA+acc_em_FA;
 	  
 	  //3fold_decaypairelectron
+// 	  acc=acc_kp*acc_em*acc_ep;
 // 	  if (acc_kp_FA>0 && acc_em_LA>0) acc=acc_kp_FA*acc_em_LA*acc_ep;
-// 	  if (acc_kp_LA>0 && acc_em_FA>0) acc=acc_kp_LA*acc_em_FA*acc_ep;	  
+	  if (acc_kp_LA>0 && acc_em_FA>0) acc=acc_kp_LA*acc_em_FA*acc_ep;	  
 
 	  //4fold
- 	  if (acc_kp_FA>0 && acc_em_LA>0) acc=acc_kp_FA*acc_em_LA*acc_ep*acc_prot;
-	  if (acc_kp_LA>0 && acc_em_FA>0) acc=acc_kp_LA*acc_em_FA*acc_ep*acc_prot;	  
+//  	  if (acc_kp_FA>0 && acc_em_LA>0) acc=acc_kp_FA*acc_em_LA*acc_ep*acc_prot;
+// 	  if (acc_kp_LA>0 && acc_em_FA>0) acc=acc_kp_LA*acc_em_FA*acc_ep*acc_prot;	  
 //  	  if (acc_kp_FA>0 && acc_em_LA>0) acc=acc_kp_FA*acc_em_LA*acc_ep*acc_prot_FA;
 // 	  if (acc_kp_LA>0 && acc_em_FA>0) acc=acc_kp_LA*acc_em_FA*acc_ep*acc_prot_FA;	  
 
@@ -867,7 +892,32 @@ else {cout << "not supported evgen " << evgen << endl; return;}
 // 	    acc_ep= acc_ep_FA+acc_ep_LA;
 // 	    acc_em= acc_em_FA+acc_em_LA;	
 	    acc_ep= acc_ep_FA;
-	    acc_em= acc_em_FA;	    
+	    acc_em= acc_em_FA;
+	    
+//	     if (acc_ep_FA>0 && ep.P()>2) acc_ep=acc_ep_FA;
+//	     if (acc_em_FA>0 && em.P()>2) acc_em=acc_em_FA;	    
+//	     if (kp.Theta()*DEG <30 && kp.Theta()*DEG>7 && kp.P()>1) acc_kp=1;
+//	     if (em.Theta()*DEG <50 && em.Theta()*DEG>7 && em.P()>1) acc_em=1;
+//	     if (ep.Theta()*DEG <50 && ep.Theta()*DEG>7 && ep.P()>1) acc_ep=1;	    
+	    
+// 	    cout << "phi " << kp.Phi()*DEG << endl;
+// 	    if (kp.Theta()*DEG <20 && kp.Theta()*DEG>5 && kp.P()>1) acc_kp=1;	    
+// 	    if (kp.Theta()*DEG <20 && kp.Theta()*DEG>5 && kp.Phi()*DEG<20 && kp.Phi()*DEG>5 && kp.P()>1) acc_kp=1;
+// 	    if (em.Theta()*DEG <30 && em.Theta()*DEG>7 && em.P()>1) acc_em=1;
+// 	    if (ep.Theta()*DEG <50 && ep.Theta()*DEG>7 && ep.P()>1) acc_ep=1;	        
+// 	    acc_ep=1;
+// 	    acc_em=1;
+	    
+// 	    cout << kp.Theta()*DEG << " "  << endl;	    
+// 	    if (kp.Theta()*DEG>5) acc_kp=1;
+// 	    if (em.Theta()*DEG>5) acc_em=1;
+// 	    if (ep.Theta()*DEG>5) acc_ep=1;
+	    
+// 	    cout << em.P() << " " << em.Pt() << endl;
+// 	    acc_kp=1;
+// 	    if (em.Theta()*DEG <160 && em.Theta()*DEG>20 && em.Pt()>2) acc_em=1; 
+// 	    if (ep.Theta()*DEG <160 && ep.Theta()*DEG>20 && ep.Pt()>1.75) acc_ep=1;	    
+	    
 	  }    
 	  else if(evgen=="twopeg"){
 	    double acc_pim_FA_p,acc_pim_LA_p,acc_pim_barrel_p,acc_pip_FA_p,acc_pip_LA_p,acc_pip_barrel_p;
@@ -1116,7 +1166,18 @@ if (Is_res &&  acc>0){
     
     double InvM_epm1=(ep+em).M();
     double InvM_epm2=(ep+kp).M();	
-    double Qp2=InvM_epm1*InvM_epm1;    
+    double Qp2=InvM_epm1*InvM_epm1;  
+    
+//     if (InvM_epm1<0.2) {
+//       cout << "strange " << MM << "\t" << InvM_epm1 << "\t" << InvM_epm2 << endl;
+//       cout << ki.M() << "\t" << ki.Px() << "\t" << ki.Py() << "\t" << ki.Pz() << "\t" << ki.P() << "\t" << ki.E() << endl;
+//       cout << targ.M() << "\t" << targ.Px() << "\t" << targ.Py() << "\t" << targ.Pz() << "\t" << targ.P() << "\t" << targ.E() << endl;      
+//       cout << prot.M() << "\t" << prot.Px() << "\t" << prot.Py() << "\t" << prot.Pz() << "\t" << prot.P() << "\t" << prot.E() << endl;
+//       cout << kp.M() << "\t" << kp.Px() << "\t" << kp.Py() << "\t" << kp.Pz() << "\t" << kp.P() << "\t" << kp.E() << endl;
+//       cout << ep.M() << "\t" << ep.Px() << "\t" << ep.Py() << "\t" << ep.Pz() << "\t" << ep.P() << "\t" << ep.E() << endl;
+//       cout << em.M() << "\t" << em.Px() << "\t" << em.Py() << "\t" << em.Pz() << "\t" << em.P() << "\t" << em.E() << endl; 
+//       cout << (ep+em).M() << "\t" << (ep+em).Px() << "\t" << (ep+em).Py() << "\t" << (ep+em).Pz() << "\t" << (ep+em).P() << "\t" << (ep+em).E() << endl; 
+//     }
       
     double Q2=-(ki-kp).M2();
     double W=(ki-kp+targ).M();
@@ -1155,7 +1216,7 @@ if (Is_res &&  acc>0){
     TLorentzVector LV_Recoil_lab=prot,LV_minus_lab=em,LV_plus_lab=ep,LV_el_in=ki,LV_el_out=kp;
 
     //incoming virtual photon,outgoing virtual photon and recoil proton are all on the same hadron plane
-    //phi angle is from lepton plane to recoil proton, kinda like trento convention for SIDIS at PhysRevD.70.117504 which has pho angle from lepton plane to outgoing hadron
+    //phi angle is from lepton plane to recoil proton, kinda like trento convention for SIDIS at PhysRevD.70.117504 which has phi angle from lepton plane to outgoing hadron
     TVector3 Tang_plane_lab=((LV_minus_lab+LV_plus_lab).Vect().Unit()).Cross((LV_Recoil_lab.Vect().Unit())).Unit();    
     TVector3 Tang_el=((LV_el_in.Vect().Unit()).Cross(LV_el_out.Vect().Unit())).Unit();	
     double Phi_LH= TMath::ACos(Tang_el*Tang_plane_lab); //same result as Tang_el.Angle(Tang_plane_lab)
@@ -1230,7 +1291,8 @@ if (Is_res &&  acc>0){
 // //       if(fabs(Phi_LH-1)<0.05 && fabs(Theta_CMV-30)<10 && fabs(Phi_CMV-30)<10) xsec_thisbin++;    
 //     }
       
-      weight[0]=1;
+//       weight[0]=effxsec*count_convert;
+      weight[0]=effxsec;
       weight[1]=acc;
       weight[2]=acc*effxsec;
       weight[3]=acc*effxsec*count_convert;
@@ -1239,6 +1301,8 @@ if (Is_res &&  acc>0){
       weight[4]=acc*effxsec*count_convert*(-t<Q2+Qp2); //-t<Q2+Q'2 factorization condition is better      
 //       weight[4]=acc*effxsec*count_convert*(1<InvM_epm1 && InvM_epm1<3);      
 //       weight[4]=acc*effxsec*count_convert*(1<InvM_epm1);
+//       weight[4]=acc*effxsec*count_convert*(W>2 && 0.05<Q2 && Q2<10 && 1e-4<-t && -t<1);
+      
       
 //      if (Q2<1) continue;     
 //      if (Qp2<1) continue;          
@@ -1272,6 +1336,11 @@ if (Is_res &&  acc>0){
 	  hdecayangle1_theta[k]->Fill(ep.Theta()*DEG,em.Theta()*DEG,weight[k]);
 	  hdecayangle2_theta[k]->Fill(ep.Theta()*DEG,kp.Theta()*DEG,weight[k]);
 	  hdecayangle3_theta[k]->Fill(em.Theta()*DEG,kp.Theta()*DEG,weight[k]);			
+	  
+	  hdecayangle1_thetaphi[k]->Fill(ep.Phi()/fabs(ep.Phi())*ep.Theta()*DEG*180+ep.Phi()*DEG,em.Phi()/fabs(em.Phi())*em.Theta()*DEG*180+em.Phi()*DEG,weight[k]);
+	  hdecayangle2_thetaphi[k]->Fill(ep.Phi()/fabs(ep.Phi())*ep.Theta()*DEG*180+ep.Phi()*DEG,kp.Phi()/fabs(kp.Phi())*kp.Theta()*DEG*180+kp.Phi()*DEG,weight[k]);
+	  hdecayangle3_thetaphi[k]->Fill(em.Phi()/fabs(em.Phi())*em.Theta()*DEG*180+em.Phi()*DEG,kp.Phi()/fabs(kp.Phi())*kp.Theta()*DEG*180+kp.Phi()*DEG,weight[k]);
+	  
   // 	if (Is_inter) hdecayangle2[k]->Fill(ep.Theta()*DEG,kp.Theta()*DEG,weight[k]);	
 
 	  hdecaymom1[k]->Fill(ep.P(),em.P(),weight[k]);
@@ -1338,7 +1407,9 @@ if (Is_res &&  acc>0){
 // // 	      cout << "range " << xip << " " << Q2 << " " << InvM_epm1<<endl;
 // 	    }
 	  
-	    if (weight[windex]>0) hcount[0]->Fill(Phi_LH*DEG,weight[windex]);
+	    if(Qp2>2 && Q2+Qp2>1 && W>2) hcount[0]->Fill(Phi_LH*DEG,weight[windex]);
+	  
+// 	    if (weight[windex]>0) hcount[0]->Fill(Phi_LH*DEG,weight[windex]);
 
 // 	    if(0<=xi && xi<0.05) && (0<=-t && -t<0.1){
 // 	      hxip_Q2[0]->Fill(xip,Q2,weight[windex]);	
@@ -1465,8 +1536,11 @@ leg4->Draw();
 //   }
  
   TCanvas *c_lepIM1_count = new TCanvas("lepIM1_count","lepIM1_count",1200,900);
-  hlepIM1[windex]->SetTitle("count/50MeV;l^{+}l^{-} InvM (GeV);");
   hlepIM1[windex]->Draw("HIST");
+  hlepIM1[windex]->SetTitle("count/50MeV;l^{+}l^{-} InvM (GeV);");
+//   hlepIM1[windex]->SetTitle("HERA H1 e 27.6GeV p 920GeV;l^{+}l^{-} InvM (GeV);d#sigma/dM(pb/GeV)");
+//   gPad->SetLogy(1);
+//   gPad->SetLogx(1);  
   c_lepIM1_count->SaveAs(Form("%s/lepIM1_count.png",input_filedir.c_str()));
   c_lepIM1_count->SaveAs(Form("%s/lepIM1_count.pdf",input_filedir.c_str()));        
   
@@ -1665,12 +1739,12 @@ hacc_Qp2_t->Draw("colz");
   TCanvas *c_countproj = new TCanvas("c_countproj","c_countproj",1600,900);
   hcount[0]->SetLineColor(kBlack);
   hcount[0]->SetMinimum(0);    
-  hcount[0]->SetMaximum(1e3);      
+//   hcount[0]->SetMaximum(1e3);      
   hcount[0]->Draw("HIST");
-  hcount[1]->SetLineColor(kRed);
-  hcount[1]->SetMinimum(0);    
-  hcount[1]->SetMaximum(1e3);    
-  hcount[1]->Draw("HIST same");
+//   hcount[1]->SetLineColor(kRed);
+//   hcount[1]->SetMinimum(0);    
+//   hcount[1]->SetMaximum(1e3);    
+//   hcount[1]->Draw("HIST same");
   c_countproj->SaveAs(Form("%s/countproj.png",input_filedir.c_str()));      
   
 //   TCanvas *can12 = new TCanvas("can12","",1200,900);
@@ -1743,6 +1817,8 @@ hacc_Qp2_t->Draw("colz");
 //   cout << "BH events counts at 2<InvM1<3 GeV and additional cut " <<  hlepIM1[4]->Integral(40,60) << endl;  //pure count and no width    
 
 outputfile->Write();
-outputfile->Flush();      
+outputfile->Flush();
+outputfile->Close();      
 
+exit(0);
 }
