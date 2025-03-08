@@ -122,18 +122,6 @@ int style[n]={1,1,1,1,1,1,1,2,2,2,2,2,2,2};
 // int color[n]={1,2,3,4,1,2,3,4};
 // int style[n]={1,1,1,1,2,2,2,2};
 
-// const int n=4;
-// char *filename[n]={
-// "acc_solid_JPsi_DDVCS_LH2/solid_JPsi_DDVCS_LH2_moved_full_even_pim_theta12_1e6_output_final_1D_direct.root",
-// "acc_solid_JPsi_DDVCS_LH2/solid_JPsi_DDVCS_LH2_moved_full_even_pim_theta12_1e6_output_final_1D_all.root",
-// "acc_solid_JPsi_DDVCS_LH2/solid_JPsi_DDVCS_LH2_moved_full_even_pim_theta12_1e6_output_final_1D_directdecay.root",
-// "acc_solid_JPsi_DDVCS_LH2/solid_JPsi_DDVCS_LH2_moved_full_even_pim_theta12_1e6_output_final_1D_alldecay.root",
-// };
-// char *label[n]={"primary pion","primary and secondary pion","muon from primary pion decay","muon from primary and secondary pion decay"};
-// sprintf(hstname,"acceptance_P_0");
-// sprintf(title,"surviving probability at forward angle muon detector");
-// int color[n]={0,1,2,3};
-
 TFile *file[n];
 TH1F *h[n];
 TH1F *hadd_ISRon,*hadd_ISRoff;

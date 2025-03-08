@@ -1,4 +1,3 @@
-//#include "/home/mpaolone/work/anaLepv2/v3/set_style.h"
 #include <iostream> 
 #include <sstream>
 #include <fstream>
@@ -18,7 +17,10 @@
 
 using namespace std;
 
-void root2lund_grape-dilepton(){
+// void root2lund(string input_filedir="")
+void root2lund()
+{
+//  remember to change vertex value for your experiment and PID for your decay channel
 //  set_style();
 // gROOT->Reset();
 gStyle->SetPalette(1);
@@ -126,18 +128,29 @@ sprintf(input_filename, "grp.root");
 //       cout << "******************************"<< endl;
 //     }
 
-//     targ.SetXYZT(px[0],py[0],pz[0],pe[0]);    
-//     ki.SetXYZT(px[1],py[1],pz[1],pe[1]);    
-    targ.SetXYZT(px[4],py[4],pz[4],pe[4]);
-    ki.SetXYZT(px[5],py[5],pz[5],pe[5]);    
-// cout <<  ki.P() << " " << targ.P() << endl;
-    
-    
-    prot.SetXYZT(px[10],py[10],pz[10],pe[10]);    
-    kp.SetXYZT(px[11],py[11],pz[11],pe[11]);
-    ep.SetXYZT(px[12],py[12],pz[12],pe[12]);
-    em.SetXYZT(px[13],py[13],pz[13],pe[13]);
-// cout <<  ep.M() << " " << em.M() << endl;
+// https://research.kek.jp/people/tabe/grape/CPC/node8.html
+// pe is not very accurate, use pm instead
+// before ISR(initial state radiation)  
+//     targ.SetXYZM(px[0],py[0],pz[0],pm[0]);    
+//     ki.SetXYZM(px[1],py[1],pz[1],pm[1]);    
+//     targ.SetXYZM(px[2],py[2],pz[2],pm[2]);
+//     ki.SetXYZM(px[3],py[3],pz[3],pm[3]);
+// after ISR(initial state radiation)  
+    targ.SetXYZM(px[4],py[4],pz[4],pm[4]);
+    ki.SetXYZM(px[5],py[5],pz[5],pm[5]); 
+// cout <<  targ.P()  << " " <<  ki.P() << endl;
+
+    //particle before FSR   
+    prot.SetXYZM(px[6],py[6],pz[6],pm[6]);    
+    kp.SetXYZM(px[7],py[7],pz[7],pm[7]);
+    ep.SetXYZM(px[8],py[8],pz[8],pm[8]);
+    em.SetXYZM(px[9],py[9],pz[9],pm[9]);    
+    //particle after FSR (not effective for leptons for elastic)
+//     prot.SetXYZM(px[10],py[10],pz[10],pm[10]);    
+//     kp.SetXYZM(px[11],py[11],pz[11],pm[11]);
+//     ep.SetXYZM(px[12],py[12],pz[12],pm[12]);
+//     em.SetXYZM(px[13],py[13],pz[13],pm[13]);
+// cout <<  prot.M()  << " " <<  kp.M() << " " << ep.M() << " " << em.M() << endl;
     
     ki.RotateY(pi1);
     targ.RotateY(pi1);    
@@ -164,26 +177,28 @@ sprintf(input_filename, "grp.root");
     double x=Q2/2./targ.M()/mu;
     double y=mu/ki.E();
   
-    double vertexZ=rand->Uniform(-322.5,-307.5);
+//     double vertexZ=rand->Uniform(-322.5,-307.5);
+    double vertexX=0,vertexY=0,vertexZ=0;    
+    double PID_decay=11; //for e-e+
+    double PID_decay=13; //for mu-mu+    
       
-      double count_convert = 1e-36*1e35*3600*24*120*0.85;
+//       double count_convert = 1e-36*1e35*3600*24*120*0.85;
+
+//     you can adjust this header line
+      OUT << "4" << " \t " << mu  << " \t " << t  << " \t " << InvM_epm1  << " \t " << "0" << " \t "  << x << " \t " << y  << " \t " << W  << " \t " << Q2  << " \t " << effxsec << endl;
       
-      OUT << "4" << " \t " << effxsec  << " \t " << t  << " \t " << InvM_epm1  << " \t " << "0" << " \t "  << x << " \t " << y  << " \t " << W  << " \t " << Q2  << " \t " << mu << endl;
+      OUT << " \t " << "1" << " \t " << 1 << " \t " << "1" << " \t " << 2212 << " \t " << "0" << " \t " << "0" << " \t " << prot.Px() << " \t " << prot.Py() << " \t " << prot.Pz() << " \t " << prot.E() << " \t " << prot.M() << " \t " << vertexX  << " \t " << vertexY << " \t " << vertexZ << endl;      
       
-      OUT << " \t " << "1" << " \t " << 1 << " \t " << "1" << " \t " << 2212 << " \t " << "0" << " \t " << "0" << " \t " << prot.Px() << " \t " << prot.Py() << " \t " << prot.Pz() << " \t " << prot.E() << " \t " << prot.M() << " \t " << 0  << " \t " << 0 << " \t " << vertexZ << endl;
+      OUT << " \t " << "2" << " \t " << -1 << " \t " << "1" << " \t " << 11 << " \t " << "0" << " \t " << "0" << " \t " << kp.Px() << " \t " << kp.Py() << " \t " << kp.Pz() << " \t " << kp.E() << " \t " << kp.M() << " \t " << vertexX  << " \t " << vertexY << " \t " << vertexZ << endl;      
       
-      OUT << " \t " << "2" << " \t " << -1 << " \t " << "1" << " \t " << 11 << " \t " << "0" << " \t " << "0" << " \t " << kp.Px() << " \t " << kp.Py() << " \t " << kp.Pz() << " \t " << kp.E() << " \t " << kp.M() << " \t " << 0  << " \t " << 0 << " \t " << vertexZ << endl;      
+      OUT << " \t " << "3" << " \t " << 1 << " \t " << "1" << " \t " << -PID_decay << " \t " << "0" << " \t " << "0" << " \t " << ep.Px() << " \t " << ep.Py() << " \t " << ep.Pz() << " \t " << ep.E() << " \t " << ep.M() << " \t " << vertexX  << " \t " << vertexY << " \t " << vertexZ << endl;      
       
-      OUT << " \t " << "3" << " \t " << 1 << " \t " << "1" << " \t " << -11 << " \t " << "0" << " \t " << "0" << " \t " << ep.Px() << " \t " << ep.Py() << " \t " << ep.Pz() << " \t " << ep.E() << " \t " << ep.M() << " \t " << 0  << " \t " << 0 << " \t " << vertexZ << endl;      
-      
-      OUT << " \t " << "4" << " \t " << -1 << " \t " << "1" << " \t " << 11 << " \t " << "0" << " \t " << "0" << " \t " << em.Px() << " \t " << em.Py() << " \t " << em.Pz() << " \t " << em.E() << " \t " << em.M() << " \t " << 0  << " \t " << 0 << " \t " << vertexZ << endl;      
-      
-//       OUT << " \t " << "1" << " \t " << charge << " \t " << "1" << " \t " << particle_id << " \t " << "0" << " \t " << "0" << " \t " << px << " \t " << py << " \t " << pz << " \t " << Ef << " \t " << mass << " \t " << p_vertex.X()  << " \t " << p_vertex.Y() << " \t " << p_vertex.Z() << endl;
+      OUT << " \t " << "4" << " \t " << -1 << " \t " << "1" << " \t " << PID_decay << " \t " << "0" << " \t " << "0" << " \t " << em.Px() << " \t " << em.Py() << " \t " << em.Pz() << " \t " << em.E() << " \t " << em.M() << " \t " << vertexX  << " \t " << vertexY << " \t " << vertexZ << endl;      
       
   }
   
 //   cout << counter1 << " " << counter2 << " " << counter3 << " " << counter4 << " " << counter5 << endl;
       
         OUT.close();  
-	
+exit(0);	
 }

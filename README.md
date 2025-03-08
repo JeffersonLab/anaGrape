@@ -79,7 +79,7 @@ file "twopeg.dat" in lund format should be produced
 
 ## tool to analysis results:
 
-root2lund_grape-dilepton.C to convert "grp.root" to "grp.lund" with vertex info added
+root2lund.C to convert "grp.root" to "grp.lund" with vertex info added
 
 ana_grape_twopeg.C can be used to analyze both grape and twopeg output
 
