@@ -266,13 +266,13 @@ TFile *acceptancefile_muon=new TFile("acc_solid_JPsi_DDVCS_LH2/solid_JPsi_DDVCS_
   thetamax=90;  
   
   if(evgen=="grape"){
-//    generator output unit pb = 1e-36 cm2, lumi 1.2e37/cm2/s, 50 days, 0.85 eff
+//  grape generator output unit pb = 1e-36 cm2, lumi 1.2e37/cm2/s, 50 days, 0.85 eff
 //       rate_convert = 1e-36*1.2e37*0.85;  
       rate_convert = 1e-36*1.2e37*0.7;      
       count_convert = rate_convert*3600*24*50;   
   }
   else if(evgen=="twopeg"){
-//    generator output unit ub = 1e-30 cm2, lumi 1.2e37/cm2/s, 50 days, 0.85 eff
+// twopeg generator output unit ub = 1e-30 cm2, lumi 1.2e37/cm2/s, 50 days, 0.85 eff
 //       rate_convert = 1e-30*1.2e37*0.85;
       rate_convert = 1e-30*1.2e37*0.7;    
       count_convert = rate_convert*3600*24*50;   
@@ -541,7 +541,7 @@ Int_t nevent;
 //for grape
 TChain *h11,*h1;
 Double_t xsec[20];  
-Float_t px[20],py[20],pz[20],pe[20],pm[20],kf[20],sta[20],npy[20];
+Float_t px[20],py[20],pz[20],pe[20],pm[20],kf[20],sta[20],npy[20],mot[20];
 //for twopeg
 ifstream infile;
 if(evgen=="grape"){
@@ -586,6 +586,8 @@ if(evgen=="grape"){
   h1->SetBranchAddress("sta",&sta);
   h1->SetBranchStatus("npy",1);
   h1->SetBranchAddress("npy",&npy);
+  h1->SetBranchStatus("mot",1);
+  h1->SetBranchAddress("mot",&mot);
   
   nevent = h1->GetEntries();
   
@@ -651,30 +653,34 @@ else {cout << "not supported evgen " << evgen << endl; return;}
     h1->GetEvent(i);
 
     //all entry http://research.kek.jp/people/tabe/grape/CPC/node8.html
-    if(i<3) {
-      for (Int_t j=0; j < 14; j++) {
-// 	cout << j << "\t"  << px[j] <<  "\t"  << py[j] <<  "\t"  << pz[j] <<  "\t"  << pe[j] <<  "\t"  << pm[j] <<  "\t"  << kf[j] <<  "\t"  << sta[j] <<  "\t"  << npy[j] << endl;
-	cout << j << setw(15)  << px[j] <<  setw(15)  << py[j] <<  setw(15)  << pz[j] <<  setw(15)  << pe[j] <<  setw(15)  << pm[j] <<  setw(15)  << kf[j] <<  setw(15)  << sta[j] <<  setw(15)  << npy[j] << endl;
-      }
-      cout << "******************************"<< endl;
+    if(i<10) {
+      cout << "*****event " << i+1 << "******************************"<< endl;              
+        TLorentzVector par_tmp_sum;        
+//       for (Int_t j=0; j < 14; j++) {
+      for (Int_t j=0; j < 30; j++) {   //elastic has 14 entries, quasi-elastic has more than 14 entries
+//         if (pm[j]=0 && pe[j]==0) break;  //skip meaningless entries
+        if (pm[j]<0.0001 && pe[j]<0.0001) break;  //skip meaningless entries
+        
+        TLorentzVector par_tmp;
+        par_tmp.SetXYZT(px[j],py[j],pz[j],pe[j]);
+          
+	cout << j+1 << setw(15)  << pm[j] << setw(15)  << par_tmp.M() << setw(15)  << px[j] <<  setw(15)  << py[j] <<  setw(15)  << pz[j] <<  setw(15)  << pe[j] <<  setw(15)  << setw(15)  << kf[j] <<  setw(15)  << sta[j] <<  setw(15)  << npy[j] << setw(15)  << mot[j] <<endl;
+
+        if (14<=j && j<=30) par_tmp_sum=par_tmp_sum+par_tmp;
+      }      
+      if (par_tmp_sum.M()!=0) cout << par_tmp_sum.M()  << " is mass of line 14+ for quasi-elastic " << endl;
     }
 
-//       for(Int_t j=0; j < 14; j++){
-// // 	TLorentzVector par_tmp;
-// // 	par_tmp.SetXYZT(px[j],py[j],pz[j],pe[j]);
-// // 	cout <<  par_tmp.M() << " ";
-// 	cout <<  pm[j] << " ";	
-//       }
-//       cout << endl;
     
 // https://research.kek.jp/people/tabe/grape/CPC/node8.html
-// pe is not very accurate, use pm instead
-// before ISR(initial state radiation)  
+// pe is not very accurate for electron, use pm instead
+// beam particle 
 //     targ.SetXYZM(px[0],py[0],pz[0],pm[0]);    
 //     ki.SetXYZM(px[1],py[1],pz[1],pm[1]);    
+// Partons before ISR(initial state radiation)  
 //     targ.SetXYZM(px[2],py[2],pz[2],pm[2]);
 //     ki.SetXYZM(px[3],py[3],pz[3],pm[3]);
-// after ISR(initial state radiation)  
+// Partons after ISR(initial state radiation)  
     targ.SetXYZM(px[4],py[4],pz[4],pm[4]);
     ki.SetXYZM(px[5],py[5],pz[5],pm[5]); 
 // cout <<  targ.P()  << " " <<  ki.P() << endl;
@@ -1185,7 +1191,7 @@ if (Is_res &&  acc>0){
     //     double xbj=Q2/2/(ki*(ep+em)); ///wrong !!!!!!!
     double xbj=Q2/2./(targ*(ki-kp));
     
-    if(i<3) cout << " W " << W <<" Q2 " << Q2 << endl; 
+//     if(i<3) cout << " W " << W <<" Q2 " << Q2 << endl; 
    
     double t=(prot-targ).M2();
     double delta2=t;    

@@ -21,6 +21,8 @@ using namespace std;
 void root2lund()
 {
 //  remember to change vertex value for your experiment and PID for your decay channel
+// and you can adjust header line also, refer to https://gemc.jlab.org/gemc/html/documentation/generator/lund.html
+    
 //  set_style();
 // gROOT->Reset();
 gStyle->SetPalette(1);
@@ -90,7 +92,8 @@ sprintf(input_filename, "grp.root");
   cout << nevent << endl;
   TLorentzVector kp, prot, ep, em, ki, targ;
 
-  Double_t effxsec = xsec[0]/(double)nevent;
+//   Double_t effxsec = xsec[0]/(double)nevent; //this is not good normalization with multiple files and we need to further divide by number of files
+  Double_t effxsec = xsec[0];  //this makes it easy for normalization with multiple files, just need to divide by nevents from all files
 
   Bool_t scatPhiBool, scat_e_calo;
 
@@ -176,16 +179,17 @@ sprintf(input_filename, "grp.root");
     double mu=ki.E()-kp.E();
     double x=Q2/2./targ.M()/mu;
     double y=mu/ki.E();
-  
-//     double vertexZ=rand->Uniform(-322.5,-307.5);
-    double vertexX=0,vertexY=0,vertexZ=0;    
-    double PID_decay=11; //for e-e+
+
+    double vertexX=0,vertexY=0;
+//     double vertexZ=0;    
+    double vertexZ=rand->Uniform(-322.5,-307.5);
+//     double PID_decay=11; //for e-e+
     double PID_decay=13; //for mu-mu+    
       
 //       double count_convert = 1e-36*1e35*3600*24*120*0.85;
 
 //     you can adjust this header line
-      OUT << "4" << " \t " << mu  << " \t " << t  << " \t " << InvM_epm1  << " \t " << "0" << " \t "  << x << " \t " << y  << " \t " << W  << " \t " << Q2  << " \t " << effxsec << endl;
+      OUT << "4" << " \t " << 0  << " \t " << 0  << " \t " << 0  << " \t " << "0" << " \t "  << 0 << " \t " << 0  << " \t " << W  << " \t " << Q2  << " \t " << effxsec << endl;
       
       OUT << " \t " << "1" << " \t " << 1 << " \t " << "1" << " \t " << 2212 << " \t " << "0" << " \t " << "0" << " \t " << prot.Px() << " \t " << prot.Py() << " \t " << prot.Pz() << " \t " << prot.E() << " \t " << prot.M() << " \t " << vertexX  << " \t " << vertexY << " \t " << vertexZ << endl;      
       
@@ -199,6 +203,5 @@ sprintf(input_filename, "grp.root");
   
 //   cout << counter1 << " " << counter2 << " " << counter3 << " " << counter4 << " " << counter5 << endl;
       
-        OUT.close();  
-exit(0);	
+        OUT.close(); 
 }

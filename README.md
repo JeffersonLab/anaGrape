@@ -9,6 +9,8 @@ it was moved from https://jlabsvn.jlab.org/svnroot/solid/evgen/BH/
 dilepton production generator from electron/positron interacts with proton,used by the experiments at DESY/HERA. 
 including Bethe-Heitler, compton and other electroweak dilepton production for elastic,quasi-elastic and DIS process.
 similar result comparing to LPAIR, see http://research.kek.jp/people/tabe/grape/heramc1998/proceedings/node4.html
+A thesis using grape http://tid.uio.no/epf/publish/Kaesli-desy-thesis-02-049.pdf
+
 
 * Read the website including the note and faq. there is also information in its "README" file of the code package
 
@@ -52,7 +54,7 @@ get your copy of container and then run at any machine
 3. add "RNDGEN true" in "grape.cards" to use non-default random seed. Otherwise every time, you will re-generate the same events. you need to "mv rndstat.dat rndstat.dat.prev" every time if you want to get new events. This means we can't use grape in farm jobs directly and we have to generate many files first as farm job input. refer to http://research.kek.jp/people/tabe/grape/FAQ/rndstat.html
 4. Various cuts like mom and angle etc can be applied in the input file, they can be used carefully to focus the simulation on interested physical region and particular detector acceptance and trigger condition.
 5. with interference on for electron pair, the scattering e- and decay e- are not distinguishable. Absolutely NO cut can be applied on any of them without careful consideration, like PMIN,PMAX,THMIN,THMAX,MASSLL etc. A lepton stored in the 8th line has smaller transverse momentum than that of a lepton in the 10th line of the output
-6. output has two trees "h1" including event info, refer to http://research.kek.jp/people/tabe/grape/CPC/node8.html
+6. root output has two trees. "h1" including event info with unit in GeV and h11 including crosssection info. refer to http://research.kek.jp/people/tabe/grape/CPC/node8.html
 7. total cross section in pb for the simulated phase space,divide it by number of event generated to have the correct weight for each event. It's stored in several places
    (a) tree "h11" including xsec[0]
    (b) section "Convergency Behavior for the Integration Step" of the "integ" log file "bases.result". It's the last iteration of the entry "Estimate(+- Error )order". It's a good idea to check to see these iteration converges.
@@ -63,7 +65,8 @@ get your copy of container and then run at any machine
 
 ### known problem
 1. occasionally, integ wouldn't end because grid calculation can't converge for certain configuration. 
-2. when producing too many events, spring will crash (weired screen output instead of Cross Section values and file spring.result is empty). you have to reduce NGEN to work. for elastic, 25000000 seems ok. other condition may change it
+2. when producing too many events, spring will crash (weird screen output instead of Cross Section values and file spring.result is empty). you have to reduce NGEN to work. for elastic, 2500000 seems ok. other condition may change it
+3. somehow electron energy "pe" is not very accurate, while electron mass "pm" is always correct
 
 ## tool to run twopeg generator
 
